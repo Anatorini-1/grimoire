@@ -33,4 +33,5 @@ google-services.json
 *.hprof
 
 
+**/__pycache__
 server/venv/
