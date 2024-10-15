@@ -1,0 +1,9 @@
+TODO:
+    ☐ Add missing endpoints for new Models
+    ☐ Add custom endpoint for getting aggregated Character Info
+    ☐ Add per-field access control to character data
+    ☐ Test all Models
+
+    Combat Mode:
+        ☐ Add combat mode xD
+
