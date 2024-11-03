@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.components.scaffold
+package pl.anatorini.grimoire.ui.components.scaffold
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add

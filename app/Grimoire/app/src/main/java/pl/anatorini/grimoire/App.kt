@@ -11,9 +11,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import pl.anatorini.grimoire.navigation.MasterRoutes
-import pl.anatorini.grimoire.screens.MainScreen
 import pl.anatorini.grimoire.state.Auth
 import pl.anatorini.grimoire.state.Settings
+import pl.anatorini.grimoire.ui.components.screens.MainScreen
 
 @Composable
 @Preview

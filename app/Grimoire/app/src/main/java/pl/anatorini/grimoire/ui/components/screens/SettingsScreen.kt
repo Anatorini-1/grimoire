@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.screens
+package pl.anatorini.grimoire.ui.components.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
@@ -12,10 +12,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import pl.anatorini.grimoire.navigation.SettingsRoutes
-import pl.anatorini.grimoire.screens.settings.EditServerAddressScreen
-import pl.anatorini.grimoire.screens.settings.SettingsList
-import pl.anatorini.grimoire.screens.settings.SomeOtherSettingsScreen
 import pl.anatorini.grimoire.state.Settings
+import pl.anatorini.grimoire.ui.components.screens.settings.EditServerAddressScreen
+import pl.anatorini.grimoire.ui.components.screens.settings.SettingsList
+import pl.anatorini.grimoire.ui.components.screens.settings.SomeOtherSettingsScreen
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable

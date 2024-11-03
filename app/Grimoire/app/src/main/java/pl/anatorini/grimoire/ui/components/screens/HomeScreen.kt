@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.screens
+package pl.anatorini.grimoire.ui.components.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,8 +27,8 @@ import compose.icons.fontawesomeicons.solid.Atlas
 import compose.icons.fontawesomeicons.solid.BookReader
 import compose.icons.fontawesomeicons.solid.Users
 import pl.anatorini.grimoire.R
-import pl.anatorini.grimoire.components.FullWidthButton
 import pl.anatorini.grimoire.navigation.Routes
+import pl.anatorini.grimoire.ui.components.common.FullWidthButton
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable

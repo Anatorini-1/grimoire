@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.components.auth
+package pl.anatorini.grimoire.ui.components.auth
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -33,7 +33,7 @@ import androidx.navigation.compose.rememberNavController
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
 import compose.icons.fontawesomeicons.brands.Google
-import pl.anatorini.grimoire.screens.auth.auth_tabs
+import pl.anatorini.grimoire.ui.components.screens.auth.auth_tabs
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable

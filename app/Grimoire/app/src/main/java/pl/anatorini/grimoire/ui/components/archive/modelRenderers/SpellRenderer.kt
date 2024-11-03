@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.components.archive.modelRenderers
+package pl.anatorini.grimoire.ui.components.archive.modelRenderers
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

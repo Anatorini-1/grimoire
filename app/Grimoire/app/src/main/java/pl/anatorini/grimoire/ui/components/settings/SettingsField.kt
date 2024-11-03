@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.components.settings
+package pl.anatorini.grimoire.ui.components.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

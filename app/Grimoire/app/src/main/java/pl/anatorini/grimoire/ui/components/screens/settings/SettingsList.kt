@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.screens.settings
+package pl.anatorini.grimoire.ui.components.screens.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,9 +15,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import pl.anatorini.grimoire.components.settings.SettingsField
 import pl.anatorini.grimoire.navigation.SettingsRoutes
 import pl.anatorini.grimoire.state.Settings
+import pl.anatorini.grimoire.ui.components.settings.SettingsField
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable

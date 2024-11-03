@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.screens
+package pl.anatorini.grimoire.ui.components.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,15 +28,15 @@ import compose.icons.fontawesomeicons.solid.Atlas
 import compose.icons.fontawesomeicons.solid.BookReader
 import compose.icons.fontawesomeicons.solid.Users
 import pl.anatorini.grimoire.MainActivity
-import pl.anatorini.grimoire.components.scaffold.ActionButton
-import pl.anatorini.grimoire.components.scaffold.TopBar
 import pl.anatorini.grimoire.navigation.CharacterRoute
-import pl.anatorini.grimoire.navigation.NavDrawerItem
 import pl.anatorini.grimoire.navigation.Routes
-import pl.anatorini.grimoire.screens.auth.AuthScreen
 import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.state.Auth
 import pl.anatorini.grimoire.state.Settings
+import pl.anatorini.grimoire.ui.components.navigation.NavDrawerItem
+import pl.anatorini.grimoire.ui.components.scaffold.ActionButton
+import pl.anatorini.grimoire.ui.components.scaffold.TopBar
+import pl.anatorini.grimoire.ui.components.screens.auth.AuthScreen
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable

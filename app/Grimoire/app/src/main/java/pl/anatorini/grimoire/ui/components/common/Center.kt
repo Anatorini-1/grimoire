@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.components
+package pl.anatorini.grimoire.ui.components.common
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

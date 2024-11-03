@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.screens.settings
+package pl.anatorini.grimoire.ui.components.screens.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

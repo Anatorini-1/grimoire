@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.navigation
+package pl.anatorini.grimoire.ui.components.navigation
 
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
@@ -20,6 +20,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
+import pl.anatorini.grimoire.navigation.Routes
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 

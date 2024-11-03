@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.screens.auth
+package pl.anatorini.grimoire.ui.components.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import pl.anatorini.grimoire.components.auth.LoginTab
-import pl.anatorini.grimoire.components.auth.RegisterTab
+import pl.anatorini.grimoire.ui.components.auth.LoginTab
+import pl.anatorini.grimoire.ui.components.auth.RegisterTab
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 

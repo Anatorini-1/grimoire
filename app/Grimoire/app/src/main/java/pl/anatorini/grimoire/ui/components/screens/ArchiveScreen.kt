@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.screens
+package pl.anatorini.grimoire.ui.components.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
-import pl.anatorini.grimoire.components.Center
+import pl.anatorini.grimoire.ui.components.common.Center
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable

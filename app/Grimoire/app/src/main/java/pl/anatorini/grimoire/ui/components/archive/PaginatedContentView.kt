@@ -1,4 +1,4 @@
-package pl.anatorini.grimoire.components.archive
+package pl.anatorini.grimoire.ui.components.archive
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
