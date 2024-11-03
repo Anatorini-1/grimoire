@@ -16,13 +16,12 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
-import pl.anatorini.grimoire.R
+import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,8 +30,9 @@ fun TopBar(navController: NavController, drawerState: DrawerState) {
     val scope = rememberCoroutineScope()
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary,
+            containerColor = MaterialTheme.colorScheme.tertiary,
+            actionIconContentColor = MaterialTheme.colorScheme.onTertiary
+
         ),
         title = {
             Text(
@@ -44,11 +44,11 @@ fun TopBar(navController: NavController, drawerState: DrawerState) {
         },
         navigationIcon = {
             IconButton(onClick = {
-                    scope.launch {
-                        drawerState.apply {
-                            if (isClosed) open() else close()
-                        }
+                scope.launch {
+                    drawerState.apply {
+                        if (isClosed) open() else close()
                     }
+                }
             }) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
@@ -73,5 +73,8 @@ fun TopBar(navController: NavController, drawerState: DrawerState) {
 fun TopBarPreview() {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    TopBar(navController = navController, drawerState)
+    AppTheme {
+
+        TopBar(navController = navController, drawerState)
+    }
 }

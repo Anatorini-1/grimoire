@@ -3,5 +3,11 @@ package pl.anatorini.grimoire.navigation
 
 enum class Routes {
     HOME,
-    SETTINGS
+    SETTINGS,
+}
+
+enum class SettingsRoutes {
+    HOME,
+    SERVER,
+    OTHER
 }

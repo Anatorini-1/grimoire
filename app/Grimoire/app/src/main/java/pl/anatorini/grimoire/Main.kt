@@ -11,8 +11,10 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
@@ -26,9 +28,7 @@ import pl.anatorini.grimoire.navigation.Routes
 import pl.anatorini.grimoire.screens.HomeScreen
 import pl.anatorini.grimoire.screens.SettingsScreen
 import pl.anatorini.grimoire.state.Settings
-import pl.anatorini.grimoire.ui.theme.Theme
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable
 @Preview
@@ -61,7 +61,7 @@ fun Main() {
             }
         }) {
 
-        Theme {
+        AppTheme {
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 topBar = { TopBar(navController, drawerState) },
@@ -77,7 +77,10 @@ fun Main() {
                         HomeScreen()
                     }
                     composable(route = Routes.SETTINGS.name) {
-                        SettingsScreen(modifier = Modifier, settings = settings, setSettings = {s -> settings = s})
+                        SettingsScreen(
+                            modifier = Modifier,
+                            settings = settings,
+                            setSettings = { s -> settings = s })
                     }
 
                 }

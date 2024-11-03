@@ -10,12 +10,14 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import pl.anatorini.grimoire.navigation.Routes
+import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable
 fun BottomBar(navController: NavController) {
@@ -23,7 +25,11 @@ fun BottomBar(navController: NavController) {
         actions = {
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }, shape = CircleShape) {
+            FloatingActionButton(
+                onClick = { /*TODO*/ },
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.tertiary
+            ) {
                 Icon(Icons.Filled.Add, contentDescription = "")
 
             }
@@ -37,5 +43,7 @@ fun BottomBar(navController: NavController) {
 @Preview
 fun BottomBarPreview() {
     val navController = rememberNavController()
-    BottomBar(navController)
+    AppTheme {
+        BottomBar(navController)
+    }
 }
