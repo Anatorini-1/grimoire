@@ -34,9 +34,12 @@ fun SettingsScreen(
             SettingsList(settings = settings, setSettings = {}, navController = navController)
         }
         composable(route = SettingsRoutes.SERVER.name) {
-            EditServerAddressScreen(navController = navController, settings = settings, setSettings = {
-                server,port -> setSettings(Settings(server,port))
-            })
+            EditServerAddressScreen(
+                navController = navController,
+                settings = settings,
+                setSettings = { server, port ->
+                    setSettings(Settings(server, port))
+                })
 
         }
         composable(route = SettingsRoutes.OTHER.name) {

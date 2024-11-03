@@ -25,7 +25,13 @@ SECRET_KEY = "django-insecure-($-vr=g1#rh(=pf^4=r5lfvh6eum27kyr5@x!nwxl%!o)k-i-m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["192.168.0.55"]
+ALLOWED_HOSTS = [
+    "192.168.0.55",
+    "localhost",
+    "127.0.0.1",
+    "::1",
+    "grimoire.anatorini.pl",
+]
 
 
 # Application definition

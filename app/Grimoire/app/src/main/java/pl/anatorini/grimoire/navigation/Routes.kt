@@ -1,9 +1,19 @@
 package pl.anatorini.grimoire.navigation
 
+import kotlinx.serialization.Serializable
+
+
+enum class MasterRoutes {
+    MAIN,
+}
 
 enum class Routes {
     HOME,
     SETTINGS,
+    CAMPAIGNS,
+    CHARACTERS,
+    ARCHIVE,
+    AUTH
 }
 
 enum class SettingsRoutes {
@@ -11,3 +21,7 @@ enum class SettingsRoutes {
     SERVER,
     OTHER
 }
+
+
+@Serializable
+data class CharacterRoute(val characterId: Int)

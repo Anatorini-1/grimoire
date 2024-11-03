@@ -16,18 +16,25 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
+import pl.anatorini.grimoire.MainActivity
+import pl.anatorini.grimoire.navigation.Routes
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController, drawerState: DrawerState) {
+fun TopBar(
+    navController: NavController,
+    drawerState: DrawerState,
+) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
     val scope = rememberCoroutineScope()
+    val activity = LocalContext.current as? MainActivity
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.tertiary,
@@ -57,7 +64,9 @@ fun TopBar(navController: NavController, drawerState: DrawerState) {
             }
         },
         actions = {
-            IconButton(onClick = { /* do something */ }) {
+            IconButton(onClick = {
+                navController.navigate(Routes.AUTH.name)
+            }) {
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = "Localized description"
