@@ -67,6 +67,9 @@ dependencies {
     testImplementation(libs.junit)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.1")
+    implementation("com.squareup.moshi:moshi:1.13.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
+
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

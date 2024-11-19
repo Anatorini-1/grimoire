@@ -12,12 +12,6 @@ import pl.anatorini.grimoire.ui.theme.AppTheme
 @Composable
 fun ActionButton(
 ) {
-    FloatingActionButton(
-        onClick = { /*TODO*/ },
-        containerColor = MaterialTheme.colorScheme.primary
-    ) {
-        Icon(imageVector = Icons.Filled.Add, contentDescription = "Action button")
-    }
 }
 
 @Composable

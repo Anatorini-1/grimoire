@@ -27,10 +27,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     "192.168.0.55",
+    "192.168.0.46",
     "localhost",
     "127.0.0.1",
     "::1",
     "grimoire.anatorini.pl",
+    "10.0.2.2",
 ]
 
 
@@ -132,5 +134,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 3,
+    "PAGE_SIZE": 5,
 }

@@ -1,0 +1,8 @@
+
+
+Add missing archive screens
+Add some caching to HttpService, reactQuery style, maybe just a key-value store based on urls
+
+
+Next do Auth
+Then basic character creation

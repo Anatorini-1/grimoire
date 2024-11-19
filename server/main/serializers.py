@@ -29,7 +29,16 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class SpellSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Spell
-        fields = ["url", "name", "description", "level"]
+        fields = [
+            "url",
+            "name",
+            "description",
+            "level",
+            "ritual",
+            "school",
+            "range",
+            "duration",
+        ]
 
 
 class CharacterSerializer(serializers.HyperlinkedModelSerializer):
@@ -41,15 +50,15 @@ class CharacterSerializer(serializers.HyperlinkedModelSerializer):
             "player",
             "campaign",
             "classname",
-            "caster_info",
+            "casterInfo",
             "experience",
             "info",
             "background",
             "alignment",
             "race",
-            "death_save_success",
-            "death_save_failure",
-            "temporary_hitpoint",
+            "deathSaveSuccess",
+            "deathSaveFailure",
+            "temporaryHitpoint",
         ]
 
 
@@ -74,7 +83,16 @@ class CharacterSerializer(serializers.HyperlinkedModelSerializer):
 class ItemSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Item
-        fields = ["url", "name", "weight", "value"]
+        fields = [
+            "url",
+            "name",
+            "weight",
+            "value",
+            "weapon",
+            "attackBonus",
+            "damage",
+            "description",
+        ]
 
 
 class CharacterItemSerializer(serializers.HyperlinkedModelSerializer):
@@ -92,7 +110,7 @@ class CampaignSerializer(serializers.HyperlinkedModelSerializer):
 class ClassSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Class
-        fields = ["url", "name"]
+        fields = ["url", "name", "spellcastingAbility"]
 
 
 class AligmentSerializer(serializers.HyperlinkedModelSerializer):

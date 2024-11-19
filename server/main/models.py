@@ -29,7 +29,7 @@ class Skill(Model):
 
 class Class(Model):
     name = CharField(max_length=64, unique=True)
-    spellcasting_ability = ForeignKey(Statistic, null=True, on_delete=PROTECT)
+    spellcastingAbility = ForeignKey(Statistic, null=True, on_delete=PROTECT)
 
 
 class Background(Model):
@@ -49,6 +49,9 @@ class Spell(Model):
     description = TextField(null=True)
     level = IntegerField()
     ritual = BooleanField(default=False)
+    school = CharField(max_length=64, default="")
+    range = CharField(max_length=256, default="Touch")
+    duration = CharField(max_length=256, default="")
 
 
 class Feat(Model):
@@ -67,15 +70,15 @@ class CharacterInfo(Model):
     apperance = TextField()
     backstory = TextField()
     treasure = TextField()
-    additional_features_and_traits = TextField()
+    additionalFeaturesAndTraits = TextField()
 
 
 class CasterInfo(Model):
-    spellcasting_class = ForeignKey(Class, on_delete=PROTECT)
+    spellcastingClass = ForeignKey(Class, on_delete=PROTECT)
 
 
 class SpellSlotsExpended(Model):
-    spell_caster_info = ForeignKey(CasterInfo, on_delete=CASCADE)
+    spellCasterInfo = ForeignKey(CasterInfo, on_delete=CASCADE)
     level = IntegerField()
     count = IntegerField()
 
@@ -91,9 +94,9 @@ class Character(Model):
     background = ForeignKey(Background, on_delete=PROTECT)
     alignment = ForeignKey(Alignment, on_delete=PROTECT)
     race = ForeignKey(Race, on_delete=PROTECT)
-    death_save_success = IntegerField(default=0)
-    death_save_failure = IntegerField(default=0)
-    temporary_hitpoint = IntegerField(default=0)
+    deathSaveSuccess = IntegerField(default=0)
+    deathSaveFailure = IntegerField(default=0)
+    temporaryHitpoint = IntegerField(default=0)
 
 
 class Item(Model):
@@ -101,7 +104,7 @@ class Item(Model):
     weight = DecimalField(decimal_places=2, max_digits=10)
     value = DecimalField(decimal_places=2, max_digits=10)
     weapon = BooleanField(default=False)
-    attack_bonus = IntegerField(null=True)
+    attackBonus = IntegerField(null=True)
     damage = CharField(max_length=128, null=True)
     description = TextField(null=True)
 

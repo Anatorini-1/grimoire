@@ -28,14 +28,16 @@ import compose.icons.fontawesomeicons.solid.Atlas
 import compose.icons.fontawesomeicons.solid.BookReader
 import compose.icons.fontawesomeicons.solid.Users
 import pl.anatorini.grimoire.MainActivity
-import pl.anatorini.grimoire.navigation.CharacterRoute
 import pl.anatorini.grimoire.navigation.Routes
 import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.state.Auth
 import pl.anatorini.grimoire.state.Settings
+import pl.anatorini.grimoire.ui.components.archive.modelRenderers.DefaultRenderer
+import pl.anatorini.grimoire.ui.components.archive.modelRenderers.ItemRenderer
+import pl.anatorini.grimoire.ui.components.archive.modelRenderers.SpellRenderer
 import pl.anatorini.grimoire.ui.components.navigation.NavDrawerItem
-import pl.anatorini.grimoire.ui.components.scaffold.ActionButton
 import pl.anatorini.grimoire.ui.components.scaffold.TopBar
+import pl.anatorini.grimoire.ui.components.screens.archive.ArchiveModelScreen
 import pl.anatorini.grimoire.ui.components.screens.auth.AuthScreen
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
@@ -50,9 +52,10 @@ fun MainScreen(
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val currentRoute = navController.currentBackStackEntryAsState()
+    val httpService = HttpService(auth, settings)
     val activity = LocalContext.current as? MainActivity
 
-    activity?.httpService = HttpService(auth)
+    activity?.httpService = httpService
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -117,7 +120,7 @@ fun MainScreen(
             modifier = Modifier.fillMaxSize(),
             topBar = { TopBar(navController, drawerState) },
             bottomBar = {},
-            floatingActionButton = { ActionButton() }
+            floatingActionButton = { }
         ) { innerPadding ->
             NavHost(
                 navController = navController,
@@ -143,10 +146,55 @@ fun MainScreen(
                     CharactersScreen()
                 }
                 composable(route = Routes.ARCHIVE.name) {
-                    ArchiveScreen()
+                    ArchiveScreen(navController = navController)
                 }
-                composable<CharacterRoute> {
-
+                composable(route = Routes.ARCHIVE_CLASSES.name) {
+                    ArchiveModelScreen(
+                        modifier = Modifier,
+                        render = { characterClass -> DefaultRenderer(item = characterClass) },
+                        label = {},
+                        getter = httpService.getClasses
+                    )
+                }
+                composable(route = Routes.ARCHIVE_SPELLS.name) {
+                    ArchiveModelScreen(
+                        modifier = Modifier,
+                        render = { spell -> SpellRenderer(spell = spell) },
+                        label = {},
+                        getter = httpService.getSpells
+                    )
+                }
+                composable(route = Routes.ARCHIVE_RACES.name) {
+                    ArchiveModelScreen(
+                        modifier = Modifier,
+                        render = { race -> DefaultRenderer(item = race) },
+                        label = {},
+                        getter = httpService.getRaces
+                    )
+                }
+                composable(route = Routes.ARCHIVE_ALIGNMENTS.name) {
+                    ArchiveModelScreen(
+                        modifier = Modifier,
+                        render = { alignment -> DefaultRenderer(item = alignment) },
+                        label = {},
+                        getter = httpService.getAlignments
+                    )
+                }
+                composable(route = Routes.ARCHIVE_BACKGROUNDS.name) {
+                    ArchiveModelScreen(
+                        modifier = Modifier,
+                        render = { spell -> DefaultRenderer(item = spell) },
+                        label = {},
+                        getter = httpService.getBackgrounds
+                    )
+                }
+                composable(route = Routes.ARCHIVE_ITEMS.name) {
+                    ArchiveModelScreen(
+                        modifier = Modifier,
+                        render = { item -> ItemRenderer(item = item) },
+                        label = {},
+                        getter = httpService.getItems
+                    )
                 }
 
             }

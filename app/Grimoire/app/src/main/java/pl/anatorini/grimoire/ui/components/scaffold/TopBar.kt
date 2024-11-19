@@ -37,8 +37,8 @@ fun TopBar(
     val activity = LocalContext.current as? MainActivity
     CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.tertiary,
-            actionIconContentColor = MaterialTheme.colorScheme.onTertiary
+            containerColor = MaterialTheme.colorScheme.primary,
+            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
 
         ),
         title = {

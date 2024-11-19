@@ -13,6 +13,14 @@ enum class Routes {
     CAMPAIGNS,
     CHARACTERS,
     ARCHIVE,
+
+    ARCHIVE_CLASSES,
+    ARCHIVE_SPELLS,
+    ARCHIVE_RACES,
+    ARCHIVE_ALIGNMENTS,
+    ARCHIVE_BACKGROUNDS,
+    ARCHIVE_ITEMS,
+
     AUTH
 }
 
@@ -25,3 +33,4 @@ enum class SettingsRoutes {
 
 @Serializable
 data class CharacterRoute(val characterId: Int)
+

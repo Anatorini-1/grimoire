@@ -6,11 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import pl.anatorini.grimoire.navigation.MasterRoutes
+import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.state.Auth
 import pl.anatorini.grimoire.state.Settings
 import pl.anatorini.grimoire.ui.components.screens.MainScreen
@@ -21,6 +23,9 @@ fun App() {
     val navController = rememberNavController()
     var settings by remember { mutableStateOf(Settings()) }
     var auth by remember { mutableStateOf(Auth()) }
+
+    val activity = LocalContext.current as? MainActivity
+    activity?.navController = navController
 
     NavHost(navController = navController, startDestination = MasterRoutes.MAIN.name) {
         composable(MasterRoutes.MAIN.name) {
