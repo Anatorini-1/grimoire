@@ -4,8 +4,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PaginatedResponse<T>(
-    val count: Int,
-    val previous: String?,
-    val next: String?,
-    val results: ArrayList<T>
+    var count: Int,
+    var previous: String?,
+    var next: String?,
+    var results: ArrayList<T>
 )

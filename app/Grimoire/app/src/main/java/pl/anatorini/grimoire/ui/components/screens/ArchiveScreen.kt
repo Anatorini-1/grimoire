@@ -88,7 +88,6 @@ fun ArchiveScreen(modifier: Modifier = Modifier, navController: NavHostControlle
             name = "Items",
             route = Routes.ARCHIVE_ITEMS.name,
             navController = navController,
-
             icon = {
                 Icon(
                     imageVector = Icons.Default.Settings,

@@ -4,6 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,15 +31,21 @@ fun <T : Model> ArchiveModelScreen(
     modifier: Modifier = Modifier,
     getter: suspend (String?) -> PaginatedResponse<T>,
     label: @Composable() () -> Unit = { },
-    render: @Composable() (T) -> Unit = { item -> DefaultRenderer(item = item) }
+    render: @Composable() (T) -> Unit = { item -> DefaultRenderer(item = item) },
+    creationForm: @Composable() (closeFunc: () -> Unit) -> Unit = {},
 ) {
     var showForm by remember { mutableStateOf(false) }
     Scaffold(
         floatingActionButton = {
+            FloatingActionButton(onClick = {
+                showForm = true;
+            }) {
+                Icon(imageVector = Icons.Filled.Add, contentDescription = "add")
+            }
         }
     ) { innerPadding ->
         if (showForm)
-//            ModelCreationForm<T>(cancel = { showForm = false }, save = {})
+            creationForm({ showForm = false })
         else
             PaginatedContentView(
                 modifier = Modifier.padding(innerPadding),

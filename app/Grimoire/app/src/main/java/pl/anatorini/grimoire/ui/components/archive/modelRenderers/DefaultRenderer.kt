@@ -20,6 +20,8 @@ fun DefaultRenderer(modifier: Modifier = Modifier, item: Model) {
 @Preview
 fun DefaultRendererPreview() {
     DefaultRenderer(item = object : Model {
-        override val name = "Default"
+        override var name = "Default";
+        override var url = ""
+
     })
 }

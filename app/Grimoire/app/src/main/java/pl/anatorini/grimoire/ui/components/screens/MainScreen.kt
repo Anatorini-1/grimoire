@@ -1,5 +1,7 @@
 package pl.anatorini.grimoire.ui.components.screens
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -14,6 +16,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,11 +30,18 @@ import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Atlas
 import compose.icons.fontawesomeicons.solid.BookReader
 import compose.icons.fontawesomeicons.solid.Users
-import pl.anatorini.grimoire.MainActivity
+import kotlinx.coroutines.launch
+import pl.anatorini.grimoire.models.Alignment
+import pl.anatorini.grimoire.models.Background
+import pl.anatorini.grimoire.models.CharacterClass
+import pl.anatorini.grimoire.models.Item
+import pl.anatorini.grimoire.models.Race
+import pl.anatorini.grimoire.models.Spell
 import pl.anatorini.grimoire.navigation.Routes
 import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.state.Auth
 import pl.anatorini.grimoire.state.Settings
+import pl.anatorini.grimoire.ui.components.archive.ModelCreationForm
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.DefaultRenderer
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.ItemRenderer
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.SpellRenderer
@@ -52,10 +62,9 @@ fun MainScreen(
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val currentRoute = navController.currentBackStackEntryAsState()
-    val httpService = HttpService(auth, settings)
-    val activity = LocalContext.current as? MainActivity
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
 
-    activity?.httpService = httpService
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
@@ -153,7 +162,23 @@ fun MainScreen(
                         modifier = Modifier,
                         render = { characterClass -> DefaultRenderer(item = characterClass) },
                         label = {},
-                        getter = httpService.getClasses
+                        getter = HttpService.getClasses,
+                        creationForm = { closeFunc ->
+                            ModelCreationForm<CharacterClass>(
+                                cancel = { closeFunc() },
+                                save = { it ->
+                                    Log.println(Log.INFO, "", it.toString())
+                                    scope.launch {
+                                        HttpService.postClass(it)?.let {
+                                            Toast.makeText(
+                                                context,
+                                                "Created!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                })
+                        }
                     )
                 }
                 composable(route = Routes.ARCHIVE_SPELLS.name) {
@@ -161,7 +186,13 @@ fun MainScreen(
                         modifier = Modifier,
                         render = { spell -> SpellRenderer(spell = spell) },
                         label = {},
-                        getter = httpService.getSpells
+                        getter = HttpService.getSpells,
+
+                        creationForm = { closeFunc ->
+                            ModelCreationForm<Spell>(
+                                cancel = { closeFunc() },
+                                save = { it -> Log.println(Log.INFO, "", it.toString()) })
+                        }
                     )
                 }
                 composable(route = Routes.ARCHIVE_RACES.name) {
@@ -169,7 +200,13 @@ fun MainScreen(
                         modifier = Modifier,
                         render = { race -> DefaultRenderer(item = race) },
                         label = {},
-                        getter = httpService.getRaces
+                        getter = HttpService.getRaces,
+
+                        creationForm = { closeFunc ->
+                            ModelCreationForm<Race>(
+                                cancel = { closeFunc() },
+                                save = { it -> Log.println(Log.INFO, "", it.toString()) })
+                        }
                     )
                 }
                 composable(route = Routes.ARCHIVE_ALIGNMENTS.name) {
@@ -177,7 +214,13 @@ fun MainScreen(
                         modifier = Modifier,
                         render = { alignment -> DefaultRenderer(item = alignment) },
                         label = {},
-                        getter = httpService.getAlignments
+                        getter = HttpService.getAlignments,
+
+                        creationForm = { closeFunc ->
+                            ModelCreationForm<Alignment>(
+                                cancel = { closeFunc() },
+                                save = { it -> Log.println(Log.INFO, "", it.toString()) })
+                        }
                     )
                 }
                 composable(route = Routes.ARCHIVE_BACKGROUNDS.name) {
@@ -185,7 +228,12 @@ fun MainScreen(
                         modifier = Modifier,
                         render = { spell -> DefaultRenderer(item = spell) },
                         label = {},
-                        getter = httpService.getBackgrounds
+                        getter = HttpService.getBackgrounds,
+                        creationForm = { closeFunc ->
+                            ModelCreationForm<Background>(
+                                cancel = { closeFunc() },
+                                save = { it -> Log.println(Log.INFO, "", it.toString()) })
+                        }
                     )
                 }
                 composable(route = Routes.ARCHIVE_ITEMS.name) {
@@ -193,7 +241,12 @@ fun MainScreen(
                         modifier = Modifier,
                         render = { item -> ItemRenderer(item = item) },
                         label = {},
-                        getter = httpService.getItems
+                        getter = HttpService.getItems,
+                        creationForm = { closeFunc ->
+                            ModelCreationForm<Item>(
+                                cancel = { closeFunc() },
+                                save = { it -> Log.println(Log.INFO, "", it.toString()) })
+                        }
                     )
                 }
 

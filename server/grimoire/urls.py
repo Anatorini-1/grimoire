@@ -1,4 +1,5 @@
 from main.views import (
+    StatisticViewSet,
     UserViewSet,
     GroupViewSet,
     CampaignViewSet,
@@ -29,6 +30,7 @@ router.register(r"spells", SpellViewSet)
 router.register(r"races", RaceViewSet)
 router.register(r"alignments", AlignmentViewSet)
 router.register(r"backgrounds", BackgroundViewSet)
+router.register(r"statistics", StatisticViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

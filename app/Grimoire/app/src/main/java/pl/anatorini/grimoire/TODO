@@ -1,6 +1,7 @@
+Add magical templated  forms for all archive screens
 
 
-Add missing archive screens
+
 Add some caching to HttpService, reactQuery style, maybe just a key-value store based on urls
 
 

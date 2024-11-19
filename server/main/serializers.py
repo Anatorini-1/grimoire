@@ -11,6 +11,7 @@ from main.models import (
     Alignment,
     Race,
     Background,
+    Statistic,
 )
 
 
@@ -128,4 +129,10 @@ class RaceSerializer(serializers.HyperlinkedModelSerializer):
 class BackgroundSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Background
+        fields = ["url", "name"]
+
+
+class StatisticSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Statistic
         fields = ["url", "name"]

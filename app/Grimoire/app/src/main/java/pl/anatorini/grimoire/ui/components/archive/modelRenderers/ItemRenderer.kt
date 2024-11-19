@@ -75,13 +75,15 @@ fun ItemRenderer(modifier: Modifier = Modifier, item: Item) {
         }
         if (detail) {
             Row(modifier = Modifier.padding(10.dp)) {
-                Text(
-                    color = MaterialTheme.colorScheme.scrim,
-                    fontSize = MaterialTheme.typography.bodyMedium.fontSize,
-                    fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
-                    fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-                    text = if(item.description == null || item.description == "") "No description" else item.description
-                )
+                (if(item.description == null || item.description == "") "No description" else item.description)?.let {
+                    Text(
+                        color = MaterialTheme.colorScheme.scrim,
+                        fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                        fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                        fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                        text = it
+                    )
+                }
 
             }
             Row(modifier = Modifier.padding(10.dp)) {

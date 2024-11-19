@@ -5,12 +5,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Item(
-    override val url: String,
-    override val name: String,
-    val weight: Float,
-    val value: Float,
-    val weapon: Boolean = false,
-    val attackBonus: Int? = null,
-    val damage: String? = null,
-    val description: String? = null,
+    override var url: String = "",
+    override var name: String = "",
+    var weight: Float = 0f,
+    var value: Float = 0f,
+    var weapon: Boolean = false,
+    var attackBonus: Int? = null,
+    var damage: String? = null,
+    var description: String? = null,
 ) : Model

@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Background(
-    override val name: String,
-    override val url: String
+    override var name: String = "",
+    override var url: String = ""
 ) : Model

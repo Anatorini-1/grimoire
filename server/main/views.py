@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 
 from main.serializers import (
+    StatisticSerializer,
     UserSerializer,
     GroupSerializer,
     SpellSerializer,
@@ -99,3 +100,8 @@ class AlignmentViewSet(viewsets.ModelViewSet):
 class BackgroundViewSet(viewsets.ModelViewSet):
     queryset = Background.objects.all()
     serializer_class = BackgroundSerializer
+
+
+class StatisticViewSet(viewsets.ModelViewSet):
+    queryset = Statistic.objects.all()
+    serializer_class = StatisticSerializer
