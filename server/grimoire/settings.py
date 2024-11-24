@@ -47,6 +47,11 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "main",
+    "campaigns",
+    "characters",
+    "library",
+    "users",
+    "game_sessions",
 ]
 
 MIDDLEWARE = [

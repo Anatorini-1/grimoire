@@ -1,18 +1,20 @@
 from main.views import (
-    StatisticViewSet,
     UserViewSet,
     GroupViewSet,
-    CampaignViewSet,
+    TestView,
+)
+from rest_framework import routers
+from library.views import (
     ClassViewSet,
-    CharacterViewSet,
+    StatisticViewSet,
     ItemViewSet,
     SpellViewSet,
-    TestView,
     RaceViewSet,
     AlignmentViewSet,
     BackgroundViewSet,
 )
-from rest_framework import routers
+from campaigns.views import CampaignViewSet
+from characters.views import CharacterViewSet
 
 from django.contrib import admin
 from django.urls import path, include
