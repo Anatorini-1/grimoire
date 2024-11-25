@@ -15,15 +15,21 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import pl.anatorini.grimoire.models.Alignment
+import pl.anatorini.grimoire.models.AlignmentForeignField
 import pl.anatorini.grimoire.models.Background
+import pl.anatorini.grimoire.models.BackgroundForeignField
+import pl.anatorini.grimoire.models.Character
 import pl.anatorini.grimoire.models.CharacterClass
+import pl.anatorini.grimoire.models.ClassForeignField
 import pl.anatorini.grimoire.models.Item
 import pl.anatorini.grimoire.models.LoginData
 import pl.anatorini.grimoire.models.LoginResponse
 import pl.anatorini.grimoire.models.Model
 import pl.anatorini.grimoire.models.PaginatedResponse
+import pl.anatorini.grimoire.models.Player
 import pl.anatorini.grimoire.models.PostAlignment
 import pl.anatorini.grimoire.models.PostBackground
+import pl.anatorini.grimoire.models.PostCharacter
 import pl.anatorini.grimoire.models.PostCharacterClass
 import pl.anatorini.grimoire.models.PostItem
 import pl.anatorini.grimoire.models.PostModel
@@ -31,6 +37,7 @@ import pl.anatorini.grimoire.models.PostRace
 import pl.anatorini.grimoire.models.PostSpell
 import pl.anatorini.grimoire.models.PostStatistic
 import pl.anatorini.grimoire.models.Race
+import pl.anatorini.grimoire.models.RaceForeignField
 import pl.anatorini.grimoire.models.RegisterData
 import pl.anatorini.grimoire.models.Spell
 import pl.anatorini.grimoire.models.Statistic
@@ -180,6 +187,13 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
         val getStatistics: suspend (pageUrl: String?) -> PaginatedResponse<Statistic> = {
             getModel("/statistics", it)
         }
+        val getCharacters: suspend (pageUrl: String?) -> PaginatedResponse<Character> = {
+            getModel("/characters", it)
+        }
+
+        val getPlayers: suspend (pageUrl: String?) -> PaginatedResponse<Player> = {
+            getModel("/users", it)
+        }
 
 
         val postClass: suspend (instance: CharacterClass) -> CharacterClass? = { it
@@ -222,6 +236,27 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
 
         val postStatistic:suspend (instance: Statistic) -> Statistic? = { it
             postModel("/statistics", PostStatistic(name=it.name))
+        }
+
+        val postCharacter:suspend (instance: Character) -> Character? = { it
+            postModel("/statistics", PostCharacter(
+                name=it.name,
+                player=it.player,
+                classname=it.classname,
+                experience=it.experience,
+                info=it.info,
+                background=it.background,
+                alignment=it.alignment,
+                race=it.race,
+                deathSaveSuccess=it.deathSaveSuccess,
+                deathSaveFailure=it.deathSaveFailure,
+                temporaryHitpoint=it.temporaryHitpoint,
+                items=it.items,
+                statistics=it.statistics,
+                skills=it.skills,
+                equipment=it.equipment,
+                spells=it.spells,
+            ))
         }
 
         val login: suspend (login:String, password:String) -> Boolean = {login, password ->

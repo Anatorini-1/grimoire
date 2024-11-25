@@ -33,6 +33,7 @@ import compose.icons.fontawesomeicons.solid.Users
 import kotlinx.coroutines.launch
 import pl.anatorini.grimoire.models.Alignment
 import pl.anatorini.grimoire.models.Background
+import pl.anatorini.grimoire.models.Character
 import pl.anatorini.grimoire.models.CharacterClass
 import pl.anatorini.grimoire.models.Item
 import pl.anatorini.grimoire.models.Race
@@ -42,6 +43,8 @@ import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.state.Auth
 import pl.anatorini.grimoire.state.Settings
 import pl.anatorini.grimoire.ui.components.archive.ModelCreationForm
+import pl.anatorini.grimoire.ui.components.archive.modelRenderers.CharacterRenderer
+import pl.anatorini.grimoire.ui.components.archive.modelRenderers.CharacterRendererPreview
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.DefaultRenderer
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.ItemRenderer
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.SpellRenderer
@@ -180,7 +183,29 @@ fun MainScreen(
                     CampaignsScreen()
                 }
                 composable(route = Routes.CHARACTERS.name) {
-                    CharactersScreen()
+                    ArchiveModelScreen(
+                        modifier = Modifier,
+                        render = { character -> CharacterRenderer(instance = character) },
+                        label = {},
+                        getter = HttpService.getCharacters,
+                        navController = navController,
+                        creationForm = { closeFunc ->
+                            ModelCreationForm<Character>(
+                                cancel = { closeFunc() },
+                                save = { it ->
+                                    Log.println(Log.INFO, "", it.toString())
+                                    scope.launch {
+                                        HttpService.postCharacter(it)?.let {
+                                            Toast.makeText(
+                                                context,
+                                                "Created!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                })
+                        }
+                    )
                 }
                 composable(route = Routes.ARCHIVE.name) {
                     ArchiveScreen(navController = navController)
