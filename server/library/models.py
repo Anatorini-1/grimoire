@@ -17,31 +17,38 @@ from django.contrib.auth.models import User
 
 class Statistic(Model):
     name = CharField(max_length=32)
+    created_by = ForeignKey(User, null=True, on_delete=CASCADE, default=None)
 
 
 class Skill(Model):
     name = CharField(max_length=64)
     statistic = ForeignKey(Statistic, on_delete=PROTECT)
+    created_by = ForeignKey(User, null=True, on_delete=CASCADE, default=None)
 
 
 class Class(Model):
     name = CharField(max_length=64, unique=True)
     spellcastingAbility = ForeignKey(Statistic, null=True, on_delete=PROTECT)
+    created_by = ForeignKey(User, null=True, on_delete=CASCADE, default=None)
 
 
 class Background(Model):
     name = CharField(max_length=64, unique=True)
+    created_by = ForeignKey(User, null=True, on_delete=CASCADE, default=None)
 
 
 class Alignment(Model):
     name = CharField(max_length=64, unique=True)
+    created_by = ForeignKey(User, null=True, on_delete=CASCADE, default=None)
 
 
 class Race(Model):
     name = CharField(max_length=64, unique=True)
+    created_by = ForeignKey(User, null=True, on_delete=CASCADE, default=None)
 
 
 class Spell(Model):
+    created_by = ForeignKey(User, null=True, on_delete=CASCADE, default=None)
     name = CharField(max_length=256, unique=True)
     description = TextField(null=True)
     level = IntegerField()
@@ -52,11 +59,13 @@ class Spell(Model):
 
 
 class Feat(Model):
+    created_by = ForeignKey(User, null=True, on_delete=CASCADE, default=None)
     name = CharField(max_length=32)
     description = TextField()
 
 
 class Item(Model):
+    created_by = ForeignKey(User, null=True, on_delete=CASCADE, default=None)
     name = CharField(max_length=256, unique=True)
     weight = DecimalField(decimal_places=2, max_digits=10)
     value = DecimalField(decimal_places=2, max_digits=10)

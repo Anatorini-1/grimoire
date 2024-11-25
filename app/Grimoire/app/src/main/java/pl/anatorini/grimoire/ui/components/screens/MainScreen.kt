@@ -45,10 +45,14 @@ import pl.anatorini.grimoire.ui.components.archive.ModelCreationForm
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.DefaultRenderer
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.ItemRenderer
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.SpellRenderer
+import pl.anatorini.grimoire.ui.components.auth.LoginTab
+import pl.anatorini.grimoire.ui.components.auth.LogoutTab
+import pl.anatorini.grimoire.ui.components.auth.RegisterTab
 import pl.anatorini.grimoire.ui.components.navigation.NavDrawerItem
 import pl.anatorini.grimoire.ui.components.scaffold.TopBar
 import pl.anatorini.grimoire.ui.components.screens.archive.ArchiveModelScreen
 import pl.anatorini.grimoire.ui.components.screens.auth.AuthScreen
+import pl.anatorini.grimoire.ui.components.screens.auth.auth_tabs
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable
@@ -146,8 +150,32 @@ fun MainScreen(
                         setSettings = { s -> setSettings(s) })
                 }
                 composable(route = Routes.AUTH.name) {
-                    AuthScreen()
+                    if(HttpService.user != null){
+                        LogoutTab(navController=navController)
+                    }
+                    else {
+                        LoginTab(navController = navController)
+                    }
                 }
+
+                composable(auth_tabs.LOGIN.name) {
+                    if(HttpService.user != null){
+                        LogoutTab(navController=navController)
+                    }
+                    else {
+                        LoginTab(navController = navController)
+                    }
+                }
+
+                composable(auth_tabs.REGISTER.name) {
+                    if(HttpService.user != null){
+                        LogoutTab(navController=navController)
+                    }
+                    else {
+                        RegisterTab(navController = navController)
+                    }
+                }
+
                 composable(route = Routes.CAMPAIGNS.name) {
                     CampaignsScreen()
                 }
@@ -163,6 +191,7 @@ fun MainScreen(
                         render = { characterClass -> DefaultRenderer(item = characterClass) },
                         label = {},
                         getter = HttpService.getClasses,
+                        navController = navController,
                         creationForm = { closeFunc ->
                             ModelCreationForm<CharacterClass>(
                                 cancel = { closeFunc() },
@@ -188,10 +217,21 @@ fun MainScreen(
                         label = {},
                         getter = HttpService.getSpells,
 
+                        navController = navController,
                         creationForm = { closeFunc ->
                             ModelCreationForm<Spell>(
                                 cancel = { closeFunc() },
-                                save = { it -> Log.println(Log.INFO, "", it.toString()) })
+                                save = { it -> Log.println(Log.INFO, "", it.toString())
+                                    scope.launch {
+                                        HttpService.postSpell(it)?.let {
+                                            Toast.makeText(
+                                                context,
+                                                "Created!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                })
                         }
                     )
                 }
@@ -202,10 +242,21 @@ fun MainScreen(
                         label = {},
                         getter = HttpService.getRaces,
 
+                        navController = navController,
                         creationForm = { closeFunc ->
                             ModelCreationForm<Race>(
                                 cancel = { closeFunc() },
-                                save = { it -> Log.println(Log.INFO, "", it.toString()) })
+                                save = { it -> Log.println(Log.INFO, "", it.toString())
+                                    scope.launch {
+                                        HttpService.postRace(it)?.let {
+                                            Toast.makeText(
+                                                context,
+                                                "Created!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                })
                         }
                     )
                 }
@@ -216,10 +267,21 @@ fun MainScreen(
                         label = {},
                         getter = HttpService.getAlignments,
 
+                        navController = navController,
                         creationForm = { closeFunc ->
                             ModelCreationForm<Alignment>(
                                 cancel = { closeFunc() },
-                                save = { it -> Log.println(Log.INFO, "", it.toString()) })
+                                save = { it -> Log.println(Log.INFO, "", it.toString())
+                                    scope.launch {
+                                        HttpService.postAlignment(it)?.let {
+                                            Toast.makeText(
+                                                context,
+                                                "Created!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                })
                         }
                     )
                 }
@@ -229,23 +291,45 @@ fun MainScreen(
                         render = { spell -> DefaultRenderer(item = spell) },
                         label = {},
                         getter = HttpService.getBackgrounds,
+                        navController = navController,
                         creationForm = { closeFunc ->
                             ModelCreationForm<Background>(
                                 cancel = { closeFunc() },
-                                save = { it -> Log.println(Log.INFO, "", it.toString()) })
+                                save = { it -> Log.println(Log.INFO, "", it.toString())
+                                    scope.launch {
+                                        HttpService.postBackground(it)?.let {
+                                            Toast.makeText(
+                                                context,
+                                                "Created!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                })
                         }
                     )
                 }
                 composable(route = Routes.ARCHIVE_ITEMS.name) {
                     ArchiveModelScreen(
                         modifier = Modifier,
+                        navController = navController,
                         render = { item -> ItemRenderer(item = item) },
                         label = {},
                         getter = HttpService.getItems,
                         creationForm = { closeFunc ->
                             ModelCreationForm<Item>(
                                 cancel = { closeFunc() },
-                                save = { it -> Log.println(Log.INFO, "", it.toString()) })
+                                save = { it -> Log.println(Log.INFO, "", it.toString())
+                                    scope.launch {
+                                        HttpService.postItem(it)?.let {
+                                            Toast.makeText(
+                                                context,
+                                                "Created!",
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                })
                         }
                     )
                 }

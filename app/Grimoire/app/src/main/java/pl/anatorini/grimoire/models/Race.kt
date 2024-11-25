@@ -7,3 +7,9 @@ data class Race(
     override var name: String = "",
     override var url: String = ""
 ) : Model
+
+
+@Serializable
+data class PostRace(
+    override val name: String
+) : PostModel

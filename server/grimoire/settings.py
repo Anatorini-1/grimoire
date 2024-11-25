@@ -25,15 +25,7 @@ SECRET_KEY = "django-insecure-($-vr=g1#rh(=pf^4=r5lfvh6eum27kyr5@x!nwxl%!o)k-i-m
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    "192.168.0.55",
-    "192.168.0.46",
-    "localhost",
-    "127.0.0.1",
-    "::1",
-    "grimoire.anatorini.pl",
-    "10.0.2.2",
-]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -46,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "main",
     "campaigns",
     "characters",
@@ -140,4 +133,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 5,
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",  # Add this line
+        "users.models.BearerTokenAuthentication",
+    ],
 }

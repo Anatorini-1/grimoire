@@ -20,8 +20,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import pl.anatorini.grimoire.models.Model
 import pl.anatorini.grimoire.models.PaginatedResponse
+import pl.anatorini.grimoire.navigation.Routes
+import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.ui.components.archive.PaginatedContentView
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.DefaultRenderer
 import pl.anatorini.grimoire.ui.theme.AppTheme
@@ -33,12 +37,18 @@ fun <T : Model> ArchiveModelScreen(
     label: @Composable() () -> Unit = { },
     render: @Composable() (T) -> Unit = { item -> DefaultRenderer(item = item) },
     creationForm: @Composable() (closeFunc: () -> Unit) -> Unit = {},
+    navController: NavController
 ) {
     var showForm by remember { mutableStateOf(false) }
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                showForm = true;
+                if(HttpService.user != null){
+                    showForm = true;
+                }
+                else{
+                    navController.navigate(Routes.AUTH.name)
+                }
             }) {
                 Icon(imageVector = Icons.Filled.Add, contentDescription = "add")
             }
@@ -79,7 +89,7 @@ fun ArchiveModelScreenPreview() {
                 .background(Color.White)
         ) {
             Text(text = "Dupa")
-            ArchiveModelScreen(getter = getter, modifier = Modifier, label = {})
+            ArchiveModelScreen(getter = getter, modifier = Modifier, label = {}, navController = rememberNavController())
         }
     }
 }

@@ -15,7 +15,7 @@ class SerializationUnitTests {
             duration = "Duration",
             level = 1,
             description = "Description",
-            range = 1,
+            range = "",
             ritual = false
         )
         val serialized: String = Json.encodeToString(spell)
@@ -33,7 +33,7 @@ class SerializationUnitTests {
             duration = "Duration",
             level = 1,
             description = "Description",
-            range = 1,
+            range ="",
             ritual = false
         )
         val serialized =

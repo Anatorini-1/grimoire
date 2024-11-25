@@ -11,7 +11,6 @@ from django.db.models import (
 )
 from django.contrib.auth.models import User
 from library.models import Background, Alignment, Race, Item, Spell, Skill, Class
-from campaigns.models import Campaign
 
 
 class CharacterInfo(Model):
@@ -41,7 +40,6 @@ class SpellSlotsExpended(Model):
 class Character(Model):
     name = CharField(max_length=128)
     player = ForeignKey(User, on_delete=PROTECT, related_name="player")
-    campaign = ForeignKey(Campaign, on_delete=CASCADE, null=True)
     classname = ForeignKey(Class, on_delete=PROTECT, related_name="classname")
     caster_info = OneToOneField(CasterInfo, null=True, on_delete=PROTECT)
     experience = IntegerField(default=0)
@@ -56,24 +54,24 @@ class Character(Model):
 
 class CharacterItem(Model):
     item = ForeignKey(Item, on_delete=PROTECT)
-    character = ForeignKey(Character, on_delete=CASCADE)
+    character = ForeignKey(Character, on_delete=CASCADE, related_name="items")
     quantity = IntegerField()
 
 
 class CharacterStatistic(Model):
-    character = ForeignKey(Character, on_delete=CASCADE)
+    character = ForeignKey(Character, on_delete=CASCADE, related_name="statistics")
     value = IntegerField()
 
 
 class CharacterSkill(Model):
-    character = ForeignKey(Character, on_delete=CASCADE)
+    character = ForeignKey(Character, on_delete=CASCADE, related_name="skills")
     skill = ForeignKey(Skill, on_delete=PROTECT)
     proficiency = BooleanField(default=False)
     expertise = BooleanField(default=False)
 
 
 class CharacterEquipment(Model):
-    character = ForeignKey(Character, on_delete=CASCADE)
+    character = ForeignKey(Character, on_delete=CASCADE, related_name="equipment")
     cp = IntegerField()
     sp = IntegerField()
     ep = IntegerField()
@@ -82,7 +80,7 @@ class CharacterEquipment(Model):
 
 
 class CharacterSpells(Model):
-    character = ForeignKey(Character, on_delete=CASCADE)
+    character = ForeignKey(Character, on_delete=CASCADE, related_name="spells")
     spell = ForeignKey(Spell, on_delete=CASCADE)
     prepared = BooleanField(default=False)
 

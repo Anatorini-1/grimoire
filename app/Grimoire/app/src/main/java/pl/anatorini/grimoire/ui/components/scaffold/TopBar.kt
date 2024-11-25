@@ -9,6 +9,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -24,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import pl.anatorini.grimoire.MainActivity
 import pl.anatorini.grimoire.navigation.Routes
+import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,7 +52,9 @@ fun TopBar(
             )
         },
         navigationIcon = {
-            IconButton(onClick = {
+            IconButton(colors = IconButtonDefaults.iconButtonColors(
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ), onClick = {
                 scope.launch {
                     drawerState.apply {
                         if (isClosed) open() else close()
@@ -59,7 +63,7 @@ fun TopBar(
             }) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
-                    contentDescription = "Localized description"
+                    contentDescription = "Localized description",
                 )
             }
         },
@@ -67,6 +71,9 @@ fun TopBar(
             IconButton(onClick = {
                 navController.navigate(Routes.AUTH.name)
             }) {
+                if(HttpService.user != null){
+                    Text("Hello ${HttpService.user!!.username}")
+                }
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = "Localized description"

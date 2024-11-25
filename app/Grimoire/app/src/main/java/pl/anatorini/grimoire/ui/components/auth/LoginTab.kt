@@ -1,5 +1,6 @@
 package pl.anatorini.grimoire.ui.components.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,9 +24,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -33,13 +36,19 @@ import androidx.navigation.compose.rememberNavController
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Brands
 import compose.icons.fontawesomeicons.brands.Google
+import kotlinx.coroutines.launch
+import pl.anatorini.grimoire.navigation.Routes
+import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.ui.components.screens.auth.auth_tabs
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable
 fun LoginTab(modifier: Modifier = Modifier, navController: NavHostController) {
-    var login by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var login by remember { mutableStateOf("admin") }
+    var password by remember { mutableStateOf("password") }
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -74,7 +83,27 @@ fun LoginTab(modifier: Modifier = Modifier, navController: NavHostController) {
                 ) {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            scope.launch {
+                                val success = HttpService.login(login,password)
+                                if (success){
+                                    navController.navigate(Routes.HOME.name)
+                                    Toast.makeText(
+                                        context,
+                                        "Logged in! Hello ${HttpService.user?.username}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                else{
+                                    Toast.makeText(
+                                        context,
+                                        "Failed",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+
+                        },
                         shape = RoundedCornerShape(size = 5.dp)
                     ) {
                         Text(text = "Login")

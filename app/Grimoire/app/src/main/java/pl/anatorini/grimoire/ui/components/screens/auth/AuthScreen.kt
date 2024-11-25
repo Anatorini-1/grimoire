@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -26,18 +27,13 @@ enum class auth_tabs {
 }
 
 @Composable
-fun AuthScreen(modifier: Modifier = Modifier) {
-    val navController = rememberNavController()
+fun AuthScreen(modifier: Modifier = Modifier, navController: NavController) {
     val tab by remember { mutableStateOf(auth_tabs.LOGIN) }
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(0.dp)
     ) {
-        NavHost(navController = navController, startDestination = auth_tabs.LOGIN.name) {
-            composable(auth_tabs.LOGIN.name) { LoginTab(navController = navController) }
-            composable(auth_tabs.REGISTER.name) { RegisterTab(navController = navController) }
-        }
     }
 }
 
@@ -45,6 +41,6 @@ fun AuthScreen(modifier: Modifier = Modifier) {
 @Preview
 fun AuthScreenPreview() {
     AppTheme {
-        AuthScreen(modifier = Modifier.background(Color.White))
+        AuthScreen(modifier = Modifier.background(Color.White), rememberNavController())
     }
 }

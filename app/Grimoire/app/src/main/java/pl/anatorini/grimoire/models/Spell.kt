@@ -14,3 +14,14 @@ data class Spell(
     var duration: String = "",
     var school: String = "",
 ) : Model
+
+@Serializable
+data class PostSpell(
+    override var name: String = "",
+    var description: String = "",
+    var level: Int = 0,
+    var ritual: Boolean = false,
+    var range: String = "",
+    var duration: String = "",
+    var school: String = "",
+):PostModel

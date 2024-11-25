@@ -1,5 +1,6 @@
 package pl.anatorini.grimoire.ui.components.archive
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,13 +36,14 @@ fun ArchiveLink(
     navController: NavController
 ) {
     Surface(
-        modifier = modifier.padding(5.dp),
-        tonalElevation = 10.dp,
-        shape = RoundedCornerShape(6.dp)
+        shape = RoundedCornerShape(6.dp),
+        modifier = modifier.padding(5.dp)
+
     ) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.primary)
                 .padding(10.dp)
                 .clickable { navController.navigate(route) },
 
@@ -50,7 +53,8 @@ fun ArchiveLink(
             Text(
                 text = name,
                 fontWeight = FontWeight.Bold,
-                fontSize = MaterialTheme.typography.bodyMedium.fontSize
+                fontSize = MaterialTheme.typography.bodyMedium.fontSize,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Box(modifier = Modifier.height(MaterialTheme.typography.bodyMedium.lineHeight.value.dp)) {
                 icon()

@@ -1,4 +1,14 @@
-from .models import Background, Alignment, Race, Item, Spell, Skill, Class, Statistic
+from .models import (
+    Background,
+    Alignment,
+    Feat,
+    Race,
+    Item,
+    Spell,
+    Skill,
+    Class,
+    Statistic,
+)
 from rest_framework import serializers
 
 
@@ -60,3 +70,15 @@ class StatisticSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Statistic
         fields = ["url", "name"]
+
+
+class SkillSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Skill
+        fields = ["url", "name", "statistic"]
+
+
+class FeatSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Feat
+        fields = ["url", "name", "description"]

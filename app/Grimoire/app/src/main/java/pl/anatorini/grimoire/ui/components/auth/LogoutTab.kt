@@ -5,12 +5,20 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -23,23 +31,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import compose.icons.FontAwesomeIcons
+import compose.icons.fontawesomeicons.Brands
+import compose.icons.fontawesomeicons.brands.Google
 import kotlinx.coroutines.launch
+import pl.anatorini.grimoire.models.User
 import pl.anatorini.grimoire.navigation.Routes
 import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.ui.components.screens.auth.auth_tabs
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable
-fun RegisterTab(modifier: Modifier = Modifier, navController: NavHostController) {
-    var login by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
+fun LogoutTab(modifier: Modifier = Modifier, navController: NavHostController) {
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -50,64 +61,25 @@ fun RegisterTab(modifier: Modifier = Modifier, navController: NavHostController)
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                OutlinedTextField(
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text(text = "Username") },
-                    value = login,
-                    onValueChange = { login = it })
-            }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                OutlinedTextField(
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = "", modifier=Modifier.size(160.dp))
+                }
+                Row(
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("E-Mail Address") },
-                    value = email,
-                    onValueChange = { email = it })
-            }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Password") },
-                    value = password,
-                    onValueChange = { password = it })
-            }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                OutlinedTextField(
-                    modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Repeat password") },
-                    value = password,
-                    onValueChange = { password = it })
-            }
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(size = 5.dp),
-                    onClick = {
-                        scope.launch {
-                            if(HttpService.register(login,email,password)){
-                                navController.navigate(Routes.AUTH.name)
-                                Toast.makeText(
-                                    context,
-                                    "Registered. You may log in now",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                            else{
-
-                                Toast.makeText(
-                                    context,
-                                    "Something went wrong",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            }
-                        }
-                    }) {
-                    Text(text = "Register")
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text("Logged in as ${HttpService.user?.username}", fontWeight = FontWeight.Bold)
                 }
             }
         }
         Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(30.dp)) {
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,11 +88,23 @@ fun RegisterTab(modifier: Modifier = Modifier, navController: NavHostController)
                 Button(
                     shape = RoundedCornerShape(5.dp),
                     modifier = Modifier.fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
                     border = BorderStroke(width = 1.dp, color = MaterialTheme.colorScheme.primary),
                     onClick = {
-                        navController.navigate(auth_tabs.LOGIN.name)
+                        scope.launch{
+                            HttpService.logout()
+                            navController.navigate(Routes.HOME.name)
+                            Toast.makeText(
+                                context,
+                                "Logged out",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }) {
-                    Text(text = "Log-in instead")
+                            Text("Logout")
                 }
             }
         }
@@ -129,9 +113,10 @@ fun RegisterTab(modifier: Modifier = Modifier, navController: NavHostController)
 
 @Composable
 @Preview
-fun RegisterTabPreview() {
+fun LogoutTabPreview() {
+    HttpService.user = User("Anatorini","token")
     AppTheme {
-        RegisterTab(
+        LogoutTab(
             modifier = Modifier.background(Color.White),
             navController = rememberNavController()
         )

@@ -7,3 +7,8 @@ data class Statistic(
     override var url: String = "",
     override var name: String = ""
 ) : Model
+
+@Serializable
+data class PostStatistic(
+    override val name: String
+) : PostModel

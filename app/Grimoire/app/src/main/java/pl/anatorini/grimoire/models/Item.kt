@@ -14,3 +14,14 @@ data class Item(
     var damage: String? = null,
     var description: String? = null,
 ) : Model
+
+@Serializable
+data class PostItem(
+    override var name: String = "",
+    var weight: Float = 0f,
+    var value: Float = 0f,
+    var weapon: Boolean = false,
+    var attackBonus: Int? = null,
+    var damage: String? = null,
+    var description: String? = null,
+):PostModel

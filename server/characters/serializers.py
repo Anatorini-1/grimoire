@@ -9,9 +9,7 @@ class CharacterSerializer(serializers.HyperlinkedModelSerializer):
             "url",
             "name",
             "player",
-            "campaign",
             "classname",
-            "casterInfo",
             "experience",
             "info",
             "background",
@@ -20,6 +18,11 @@ class CharacterSerializer(serializers.HyperlinkedModelSerializer):
             "deathSaveSuccess",
             "deathSaveFailure",
             "temporaryHitpoint",
+            "items",
+            "statistics",
+            "skills",
+            "equipment",
+            "spells",
         ]
 
 
