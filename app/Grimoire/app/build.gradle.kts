@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.ktor.client.core)
+    implementation("io.ktor:ktor-client-websockets-jvm:3.0.0")
     implementation(libs.ktor.client.cio)
     implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
@@ -69,6 +70,7 @@ dependencies {
     implementation("br.com.devsrsouza.compose.icons:font-awesome:1.1.1")
     implementation("com.squareup.moshi:moshi:1.13.0")
     implementation("com.squareup.moshi:moshi-kotlin:1.13.0")
+
     implementation("io.ktor:ktor-client-content-negotiation:3.0.0")
     implementation("io.ktor:ktor-serialization-kotlinx-json:3.0.0")
 

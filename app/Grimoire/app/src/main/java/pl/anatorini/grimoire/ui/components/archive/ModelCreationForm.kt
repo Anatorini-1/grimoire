@@ -46,7 +46,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import pl.anatorini.grimoire.models.ForeignField
-import pl.anatorini.grimoire.models.Model
+import pl.anatorini.grimoire.models.NamedModel
 import pl.anatorini.grimoire.models.Spell
 import pl.anatorini.grimoire.ui.theme.AppTheme
 import kotlin.reflect.KClass
@@ -62,7 +62,7 @@ fun setProperty(instance: Any, propName: String, value: Any) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-inline fun <reified T : Model> ModelCreationForm(
+inline fun <reified T : NamedModel> ModelCreationForm(
     modifier: Modifier = Modifier,
     crossinline cancel: () -> Unit,
     crossinline save: (arg: T) -> Unit
@@ -232,7 +232,7 @@ inline fun <reified T : Model> ModelCreationForm(
                                 ) {
                                     (prop.get(modelInstance) as? ForeignField<*>)?.let { field ->
                                         var coffeeDrinks by remember {
-                                            mutableStateOf<List<Model>>(
+                                            mutableStateOf<List<NamedModel>>(
                                                 emptyList()
                                             )
                                         }

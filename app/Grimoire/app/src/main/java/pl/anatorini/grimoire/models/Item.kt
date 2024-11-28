@@ -23,7 +23,7 @@ data class Item(
     var attackBonus: Int? = null,
     var damage: String? = null,
     var description: String? = null,
-) : Model
+) : NamedModel
 
 @Serializable
 data class PostItem(
@@ -34,7 +34,7 @@ data class PostItem(
     var attackBonus: Int? = null,
     var damage: String? = null,
     var description: String? = null,
-):PostModel
+) : PostModel
 
 @Serializable(with = ItemForeignFieldSerializer::class)
 data class ItemForeignField(
@@ -49,6 +49,10 @@ data class ItemForeignField(
             items.addAll(paginatedResponse.results)
         }
         items
+    },
+    override val getValue: suspend () -> Item = {
+
+        HttpService.getModelInstance(url)
     }
 ) : ForeignField<Item>
 

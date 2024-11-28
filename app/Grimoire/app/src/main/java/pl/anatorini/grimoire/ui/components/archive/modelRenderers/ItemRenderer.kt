@@ -25,12 +25,13 @@ import pl.anatorini.grimoire.ui.theme.AppTheme
 @Composable
 fun ItemRenderer(modifier: Modifier = Modifier, item: Item) {
     var detail by remember { mutableStateOf(false) }
+    var count by remember { mutableStateOf(0) }
     Column(
         modifier = modifier
             .fillMaxWidth()
             .border(width = 2.dp, color = MaterialTheme.colorScheme.primary)
             .padding(10.dp)
-            .clickable { detail = !detail }
+            .clickable { detail = !detail; count++ }
     ) {
         Row(
             modifier = modifier
@@ -40,6 +41,13 @@ fun ItemRenderer(modifier: Modifier = Modifier, item: Item) {
                 modifier = Modifier
                     .weight(3f)
             ) {
+                Text(
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                    fontFamily = MaterialTheme.typography.bodyLarge.fontFamily,
+                    fontStyle = MaterialTheme.typography.bodyLarge.fontStyle,
+                    text = count.toString()
+                )
                 Text(
                     color = MaterialTheme.colorScheme.primary,
                     fontSize = MaterialTheme.typography.bodyLarge.fontSize,

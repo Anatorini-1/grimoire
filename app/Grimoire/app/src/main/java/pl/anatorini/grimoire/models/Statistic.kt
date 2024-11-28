@@ -15,7 +15,7 @@ import pl.anatorini.grimoire.services.HttpService
 data class Statistic(
     override var url: String = "",
     override var name: String = ""
-) : Model
+) : NamedModel
 
 @Serializable
 data class PostStatistic(
@@ -36,6 +36,10 @@ data class StatisticForeignField(
             items.addAll(paginatedResponse.results)
         }
         items
+    },
+    override val getValue: suspend () -> Statistic = {
+
+        HttpService.getModelInstance(url)
     }
 ) : ForeignField<Statistic> {
     override fun toString(): String = url

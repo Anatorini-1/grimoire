@@ -1,6 +1,7 @@
 from main.views import (
     TestView,
 )
+from game_sessions.views import SessionMessageViewSet, CampaignSessionViewSet
 from users.views import RegisterView, UserViewSet
 from rest_framework import routers
 from rest_framework.authtoken import views
@@ -15,7 +16,7 @@ from library.views import (
     AlignmentViewSet,
     BackgroundViewSet,
 )
-from campaigns.views import CampaignViewSet
+from campaigns.views import CampaignPlayers, CampaignViewSet
 from characters.views import CharacterViewSet
 from users.views import UserLoginView
 
@@ -25,6 +26,10 @@ from django.urls import path, include
 router = routers.DefaultRouter()
 router.register(r"users", UserViewSet)
 router.register(r"campaigns", CampaignViewSet)
+router.register(r"campaignPlayers", CampaignPlayers)
+router.register(r"campaignSessions", CampaignSessionViewSet)
+router.register(r"sessionChatMessages", SessionMessageViewSet)
+
 router.register(r"classes", ClassViewSet)
 router.register(r"characters", CharacterViewSet)
 router.register(r"items", ItemViewSet)

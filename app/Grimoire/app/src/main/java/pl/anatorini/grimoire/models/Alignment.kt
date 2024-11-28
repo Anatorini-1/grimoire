@@ -16,7 +16,7 @@ import pl.anatorini.grimoire.services.HttpService
 data class Alignment(
     override var name: String = "",
     override var url: String = ""
-) : Model
+) : NamedModel
 
 
 @Serializable
@@ -37,6 +37,10 @@ data class AlignmentForeignField(
             items.addAll(paginatedResponse.results)
         }
         items
+    },
+
+    override val getValue: suspend () -> Alignment = {
+        HttpService.getModelInstance(url)
     }
 ) : ForeignField<Alignment>
 

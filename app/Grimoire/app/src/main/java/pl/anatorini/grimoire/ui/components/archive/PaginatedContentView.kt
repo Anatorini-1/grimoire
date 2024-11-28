@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import pl.anatorini.grimoire.models.Model
+import pl.anatorini.grimoire.models.NamedModel
 import pl.anatorini.grimoire.models.PaginatedResponse
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.DefaultRenderer
 import pl.anatorini.grimoire.ui.components.common.Center
@@ -52,7 +52,7 @@ import pl.anatorini.grimoire.ui.theme.AppTheme
 
 
 @Composable
-fun <T : Model> PaginatedContentView(
+fun <T : NamedModel> PaginatedContentView(
     modifier: Modifier = Modifier,
     getter: suspend (String?) -> PaginatedResponse<T>,
     label: @Composable() () -> Unit = { },
@@ -204,7 +204,7 @@ fun PaginatedContentViewPreview() {
     data class Tmp(
         override val name: String,
         override val url: String = ""
-    ) : Model
+    ) : NamedModel
     AppTheme {
         PaginatedContentView<Tmp>(
             modifier = Modifier.background(Color.White),

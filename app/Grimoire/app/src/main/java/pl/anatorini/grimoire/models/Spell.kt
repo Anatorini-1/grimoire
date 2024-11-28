@@ -23,7 +23,7 @@ data class Spell(
     var range: String = "",
     var duration: String = "",
     var school: String = "",
-) : Model
+) : NamedModel
 
 @Serializable
 data class PostSpell(
@@ -34,9 +34,7 @@ data class PostSpell(
     var range: String = "",
     var duration: String = "",
     var school: String = "",
-):PostModel
-
-
+) : PostModel
 
 
 @Serializable(with = SpellForeignFieldSerializer::class)
@@ -52,6 +50,10 @@ data class SpellForeignField(
             items.addAll(paginatedResponse.results)
         }
         items
+    },
+    override val getValue: suspend () -> Spell = {
+
+        HttpService.getModelInstance(url)
     }
 ) : ForeignField<Spell>
 

@@ -87,7 +87,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavHostController) 
             )
             FullWidthButton(
                 modifier = Modifier,
-                label = { Text(text = "Knowleage Archive") },
+                label = { Text(text = "Library") },
                 icon = {
                     Icon(
                         imageVector = FontAwesomeIcons.Solid.Atlas,

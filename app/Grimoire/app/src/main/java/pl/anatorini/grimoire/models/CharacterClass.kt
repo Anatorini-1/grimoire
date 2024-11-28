@@ -17,7 +17,7 @@ data class CharacterClass(
     override var name: String = "",
     override var url: String = "",
     var spellcastingAbility: StatisticForeignField = StatisticForeignField("")
-) : Model
+) : NamedModel
 
 
 @Serializable
@@ -25,7 +25,6 @@ data class PostCharacterClass(
     override var name: String,
     var spellcastingAbility: StatisticForeignField,
 ) : PostModel
-
 
 
 @Serializable(with = ClassForeignFieldSerializer::class)
@@ -41,6 +40,10 @@ data class ClassForeignField(
             items.addAll(paginatedResponse.results)
         }
         items
+    },
+    override val getValue: suspend () -> CharacterClass = {
+
+        HttpService.getModelInstance(url)
     }
 ) : ForeignField<CharacterClass>
 

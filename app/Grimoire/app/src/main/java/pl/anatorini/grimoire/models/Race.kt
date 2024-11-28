@@ -16,7 +16,7 @@ import pl.anatorini.grimoire.services.HttpService
 data class Race(
     override var name: String = "",
     override var url: String = ""
-) : Model
+) : NamedModel
 
 
 @Serializable
@@ -38,6 +38,10 @@ data class RaceForeignField(
             items.addAll(paginatedResponse.results)
         }
         items
+    },
+    override val getValue: suspend () -> Race = {
+
+        HttpService.getModelInstance(url)
     }
 ) : ForeignField<Race>
 

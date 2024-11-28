@@ -25,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import compose.icons.FontAwesomeIcons
 import compose.icons.fontawesomeicons.Solid
 import compose.icons.fontawesomeicons.solid.Atlas
@@ -39,12 +40,12 @@ import pl.anatorini.grimoire.models.Item
 import pl.anatorini.grimoire.models.Race
 import pl.anatorini.grimoire.models.Spell
 import pl.anatorini.grimoire.navigation.Routes
+import pl.anatorini.grimoire.navigation.SessionRoute
 import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.state.Auth
 import pl.anatorini.grimoire.state.Settings
 import pl.anatorini.grimoire.ui.components.archive.ModelCreationForm
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.CharacterRenderer
-import pl.anatorini.grimoire.ui.components.archive.modelRenderers.CharacterRendererPreview
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.DefaultRenderer
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.ItemRenderer
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.SpellRenderer
@@ -54,7 +55,6 @@ import pl.anatorini.grimoire.ui.components.auth.RegisterTab
 import pl.anatorini.grimoire.ui.components.navigation.NavDrawerItem
 import pl.anatorini.grimoire.ui.components.scaffold.TopBar
 import pl.anatorini.grimoire.ui.components.screens.archive.ArchiveModelScreen
-import pl.anatorini.grimoire.ui.components.screens.auth.AuthScreen
 import pl.anatorini.grimoire.ui.components.screens.auth.auth_tabs
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
@@ -111,7 +111,7 @@ fun MainScreen(
                         NavDrawerItem(
                             navController = navController,
                             route = Routes.ARCHIVE,
-                            label = "Knowledge Archive",
+                            label = "Library",
                             icon = FontAwesomeIcons.Solid.Atlas,
                             currentRoute = currentRoute.value,
                             drawerState = drawerState
@@ -153,37 +153,43 @@ fun MainScreen(
                         setSettings = { s -> setSettings(s) })
                 }
                 composable(route = Routes.AUTH.name) {
-                    if(HttpService.user != null){
-                        LogoutTab(navController=navController)
-                    }
-                    else {
+                    if (HttpService.user != null) {
+                        LogoutTab(navController = navController)
+                    } else {
                         LoginTab(navController = navController)
                     }
                 }
 
                 composable(auth_tabs.LOGIN.name) {
-                    if(HttpService.user != null){
-                        LogoutTab(navController=navController)
-                    }
-                    else {
+                    if (HttpService.user != null) {
+                        LogoutTab(navController = navController)
+                    } else {
                         LoginTab(navController = navController)
                     }
                 }
 
                 composable(auth_tabs.REGISTER.name) {
-                    if(HttpService.user != null){
-                        LogoutTab(navController=navController)
-                    }
-                    else {
+                    if (HttpService.user != null) {
+                        LogoutTab(navController = navController)
+                    } else {
                         RegisterTab(navController = navController)
                     }
                 }
 
                 composable(route = Routes.CAMPAIGNS.name) {
-                    CampaignsScreen()
+                    if (HttpService.user == null) {
+                        LoginTab(navController = navController)
+                    } else {
+                        CampaignsScreen(navController = navController)
+                    }
+                }
+                composable<SessionRoute>() { navBackStackEntry ->
+                    val route: SessionRoute = navBackStackEntry.toRoute()
+                    SessionScreen(navController = navController, url = route.url)
+
                 }
                 composable(route = Routes.CHARACTERS.name) {
-                    ArchiveModelScreen(
+                    ArchiveModelScreen<Character>(
                         modifier = Modifier,
                         render = { character -> CharacterRenderer(instance = character) },
                         label = {},
@@ -246,7 +252,8 @@ fun MainScreen(
                         creationForm = { closeFunc ->
                             ModelCreationForm<Spell>(
                                 cancel = { closeFunc() },
-                                save = { it -> Log.println(Log.INFO, "", it.toString())
+                                save = { it ->
+                                    Log.println(Log.INFO, "", it.toString())
                                     scope.launch {
                                         HttpService.postSpell(it)?.let {
                                             Toast.makeText(
@@ -271,7 +278,8 @@ fun MainScreen(
                         creationForm = { closeFunc ->
                             ModelCreationForm<Race>(
                                 cancel = { closeFunc() },
-                                save = { it -> Log.println(Log.INFO, "", it.toString())
+                                save = { it ->
+                                    Log.println(Log.INFO, "", it.toString())
                                     scope.launch {
                                         HttpService.postRace(it)?.let {
                                             Toast.makeText(
@@ -296,7 +304,8 @@ fun MainScreen(
                         creationForm = { closeFunc ->
                             ModelCreationForm<Alignment>(
                                 cancel = { closeFunc() },
-                                save = { it -> Log.println(Log.INFO, "", it.toString())
+                                save = { it ->
+                                    Log.println(Log.INFO, "", it.toString())
                                     scope.launch {
                                         HttpService.postAlignment(it)?.let {
                                             Toast.makeText(
@@ -320,7 +329,8 @@ fun MainScreen(
                         creationForm = { closeFunc ->
                             ModelCreationForm<Background>(
                                 cancel = { closeFunc() },
-                                save = { it -> Log.println(Log.INFO, "", it.toString())
+                                save = { it ->
+                                    Log.println(Log.INFO, "", it.toString())
                                     scope.launch {
                                         HttpService.postBackground(it)?.let {
                                             Toast.makeText(
@@ -344,7 +354,8 @@ fun MainScreen(
                         creationForm = { closeFunc ->
                             ModelCreationForm<Item>(
                                 cancel = { closeFunc() },
-                                save = { it -> Log.println(Log.INFO, "", it.toString())
+                                save = { it ->
+                                    Log.println(Log.INFO, "", it.toString())
                                     scope.launch {
                                         HttpService.postItem(it)?.let {
                                             Toast.makeText(

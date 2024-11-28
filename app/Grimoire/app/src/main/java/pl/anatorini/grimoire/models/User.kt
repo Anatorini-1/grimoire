@@ -9,40 +9,39 @@ import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.encoding.encodeStructure
 import pl.anatorini.grimoire.services.HttpService
 
 @Serializable
-data class User (
+data class User(
     var username: String,
     var token: String,
 )
 
 @Serializable
 data class LoginData(
-    val username:String,
+    val username: String,
     val password: String
 )
 
 @Serializable
 data class LoginResponse(
-    val token:String
+    val token: String
 )
 
 @Serializable
 data class RegisterData(
     val username: String,
-    val email:String,
-    val password:String
+    val email: String,
+    val password: String
 )
 
 @Serializable
 data class Player(
     override val name: String,
     override val url: String,
-    val email:String,
-    
-):Model
+    val email: String,
+
+    ) : NamedModel
 
 
 @Serializable(with = PlayerForeignFieldSerializer::class)
@@ -58,6 +57,9 @@ data class PlayerForeignField(
             items.addAll(paginatedResponse.results)
         }
         items
+    },
+    override val getValue: suspend () -> Player = {
+        HttpService.getModelInstance(url)
     }
 ) : ForeignField<Player> {
     override fun toString(): String = url

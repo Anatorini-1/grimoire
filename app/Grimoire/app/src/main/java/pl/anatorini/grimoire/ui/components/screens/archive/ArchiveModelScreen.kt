@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -22,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import pl.anatorini.grimoire.models.Model
+import pl.anatorini.grimoire.models.NamedModel
 import pl.anatorini.grimoire.models.PaginatedResponse
 import pl.anatorini.grimoire.navigation.Routes
 import pl.anatorini.grimoire.services.HttpService
@@ -31,7 +29,7 @@ import pl.anatorini.grimoire.ui.components.archive.modelRenderers.DefaultRendere
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable
-fun <T : Model> ArchiveModelScreen(
+fun <T : NamedModel> ArchiveModelScreen(
     modifier: Modifier = Modifier,
     getter: suspend (String?) -> PaginatedResponse<T>,
     label: @Composable() () -> Unit = { },
@@ -43,10 +41,9 @@ fun <T : Model> ArchiveModelScreen(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                if(HttpService.user != null){
+                if (HttpService.user != null) {
                     showForm = true;
-                }
-                else{
+                } else {
                     navController.navigate(Routes.AUTH.name)
                 }
             }) {
@@ -72,7 +69,7 @@ fun ArchiveModelScreenPreview() {
     data class MockModel(
         override val name: String,
         override val url: String = ""
-    ) : Model
+    ) : NamedModel
 
     val getter: (String?) -> PaginatedResponse<MockModel> = {
         PaginatedResponse<MockModel>(
@@ -89,7 +86,12 @@ fun ArchiveModelScreenPreview() {
                 .background(Color.White)
         ) {
             Text(text = "Dupa")
-            ArchiveModelScreen(getter = getter, modifier = Modifier, label = {}, navController = rememberNavController())
+            ArchiveModelScreen(
+                getter = getter,
+                modifier = Modifier,
+                label = {},
+                navController = rememberNavController()
+            )
         }
     }
 }

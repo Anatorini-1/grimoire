@@ -28,95 +28,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import pl.anatorini.grimoire.services.HttpService
+import pl.anatorini.grimoire.ui.components.archive.modelRenderers.CampaignRenderer
+import pl.anatorini.grimoire.ui.components.screens.archive.ArchiveModelScreen
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CampaignsScreen(modifier: Modifier = Modifier) {
-
-    Column(modifier = modifier.fillMaxHeight()) {
-        var x by remember { mutableStateOf<String>("") }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(intrinsicSize = IntrinsicSize.Max),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            val context = LocalContext.current
-            val coffeeDrinks = arrayOf(
-                "Americano",
-                "Cappuccino",
-                "Espresso",
-                "Latte",
-                "Mocha"
-            )
-            var expanded by remember { mutableStateOf(false) }
-            var selectedText by remember { mutableStateOf(coffeeDrinks[0]) }
-
-            Surface(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                tonalElevation = 20.dp
-            ) {
-                ExposedDropdownMenuBox(
-                    modifier = Modifier.fillMaxWidth(),
-                    expanded = expanded,
-                    onExpandedChange = {
-                        expanded = !expanded
-                    }
-                ) {
-                    TextField(
-                        value = selectedText,
-                        onValueChange = {},
-                        readOnly = true,
-                        trailingIcon = {
-                            ExposedDropdownMenuDefaults.TrailingIcon(
-                                expanded = expanded
-                            )
-                        },
-                        modifier = Modifier
-                            .menuAnchor()
-                            .fillMaxWidth(),
-                        colors = TextFieldDefaults.colors(
-                            unfocusedContainerColor = Color.Transparent
-                        ),
-
-                        )
-
-                    ExposedDropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        coffeeDrinks.forEach { item ->
-                            DropdownMenuItem(
-                                text = { Text(text = item) },
-                                onClick = {
-                                    selectedText = item
-                                    expanded = false
-                                    Toast.makeText(
-                                        context,
-                                        item,
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
+fun CampaignsScreen(modifier: Modifier = Modifier, navController: NavController) {
+    ArchiveModelScreen(getter = HttpService.getCampaigns, navController = navController, render = {CampaignRenderer(
+        instance = it, navController = navController
+    )})
 }
 
 @Composable
 @Preview
 fun CampaignsScreenPreview() {
     AppTheme {
-
         CampaignsScreen(
             Modifier
                 .fillMaxSize()
                 .background(Color.White)
+            , rememberNavController()
         )
     }
 }

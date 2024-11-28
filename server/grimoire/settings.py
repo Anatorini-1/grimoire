@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -45,8 +46,13 @@ INSTALLED_APPS = [
     "library",
     "users",
     "game_sessions",
+    "channels",
 ]
-
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -58,7 +64,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "grimoire.urls"
-
+WSGI_APPLICATION = "grimoire.wsgi.application"
+ASGI_APPLICATION = "grimoire.asgi.application"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
