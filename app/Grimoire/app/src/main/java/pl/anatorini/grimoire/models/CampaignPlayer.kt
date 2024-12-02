@@ -15,11 +15,16 @@ import pl.anatorini.grimoire.services.HttpService
 data class CampaignPlayer(
     override var url: String,
     var campaign: CampaignForeignField = CampaignForeignField(""),
-    var player: PlayerForeignField = PlayerForeignField(""),
+    var player: Player? = null,
     var accepted: Boolean = false,
     var character: CharacterForeignField? = CharacterForeignField(""),
 ) : Model
 
+
+@Serializable
+data class CampaignPlayerInvite(
+    val player: String,
+)
 
 @Serializable(with = CampaignPlayerForeignFieldSerializer::class)
 data class CampaignPlayerForeignField(

@@ -34,7 +34,7 @@ fun App() {
                 auth = auth,
                 masterNavController = navController,
                 settings = settings,
-                setSettings = { s -> settings = s }
+                setSettings = { s -> HttpService.address = s.serverAddress; HttpService.port = s.port}
             )
         }
     }

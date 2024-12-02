@@ -13,7 +13,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
-    name = serializers.CharField(source="user.username")  # Renamed field
+    name = serializers.CharField(source="username")  # Renamed field
 
     class Meta:
         model = User
@@ -22,7 +22,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # Create the user with a hashed password
         user = User.objects.create_user(
-            username=validated_data["name"],
+            username=validated_data["username"],
             email=validated_data["email"],
             password=validated_data["password"],
         )

@@ -16,8 +16,8 @@ data class WebSocketChatMessage(
 )
 
 interface WebSocketHandler {
-    val onMessage: (Frame) -> Unit
-    val onConnected: () -> Unit
-    val onDisconnected: () -> Unit
-    val onError: () -> Unit
+    val onMessage: suspend (Frame) -> Unit
+    val onConnected: suspend () -> Unit
+    val onDisconnected: suspend () -> Unit
+    val onError: suspend () -> Unit
 }

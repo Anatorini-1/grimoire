@@ -45,9 +45,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import pl.anatorini.grimoire.models.Character
 import pl.anatorini.grimoire.models.ForeignField
 import pl.anatorini.grimoire.models.NamedModel
-import pl.anatorini.grimoire.models.Spell
 import pl.anatorini.grimoire.ui.theme.AppTheme
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
@@ -240,9 +240,10 @@ inline fun <reified T : NamedModel> ModelCreationForm(
                                         var selectedText by remember { mutableStateOf<String?>(null) }
                                         LaunchedEffect(key1 = "") {
                                             coffeeDrinks = field.getValues()
-                                            if (coffeeDrinks.size > 0)
+                                            if (coffeeDrinks.size > 0) {
                                                 selectedText = coffeeDrinks[0].name
-                                            setProperty(field, "url", coffeeDrinks[0].url)
+                                                setProperty(field, "url", coffeeDrinks[0].url)
+                                            }
                                         }
                                         Surface(
                                             modifier = Modifier
@@ -250,7 +251,11 @@ inline fun <reified T : NamedModel> ModelCreationForm(
                                             tonalElevation = 20.dp
                                         ) {
                                             ExposedDropdownMenuBox(
-                                                modifier = Modifier.fillMaxWidth(),
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .clip(
+                                                        RoundedCornerShape(10.dp)
+                                                    ),
                                                 expanded = expanded,
                                                 onExpandedChange = {
                                                     expanded = !expanded
@@ -262,6 +267,7 @@ inline fun <reified T : NamedModel> ModelCreationForm(
                                                         x = it
 
                                                     },
+                                                    shape = RoundedCornerShape(10.dp),
                                                     readOnly = true,
                                                     trailingIcon = {
                                                         ExposedDropdownMenuDefaults.TrailingIcon(
@@ -270,10 +276,15 @@ inline fun <reified T : NamedModel> ModelCreationForm(
                                                     },
                                                     modifier = Modifier
                                                         .menuAnchor()
+                                                        .padding(3.dp)
                                                         .fillMaxWidth(),
                                                     colors = TextFieldDefaults.colors(
-                                                        unfocusedContainerColor = Color.Transparent
-                                                    ),
+                                                        focusedContainerColor = MaterialTheme.colorScheme.primary,
+                                                        focusedTextColor = MaterialTheme.colorScheme.onPrimary,
+                                                        unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                                                        unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
+
+                                                        ),
 
                                                     )
 
@@ -338,6 +349,6 @@ inline fun <reified T : NamedModel> ModelCreationForm(
 @Preview
 fun ModelCreationFormPreview() {
     AppTheme {
-        ModelCreationForm<Spell>(Modifier.background(Color.White), cancel = {}, save = {})
+        ModelCreationForm<Character>(Modifier.background(Color.White), cancel = {}, save = {})
     }
 }

@@ -1,21 +1,31 @@
 from rest_framework import serializers
 
+from game_sessions.serializers import SessionSerializer
+from users.serializers import UserSerializer
+
 from .models import Campaign, CampaignChatMessage, CampaignPlayer
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework import status
 
 
-class CampaignSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Campaign
-        fields = ["url", "dm", "name", "players", "sessions"]
-
-
 class CampaignPlayerSerializer(serializers.HyperlinkedModelSerializer):
+    player = UserSerializer()
+
     class Meta:
         model = CampaignPlayer
         fields = ["url", "campaign", "player", "character", "accepted"]
+
+
+class CampaignSerializer(serializers.HyperlinkedModelSerializer):
+    dm = UserSerializer()
+    players = CampaignPlayerSerializer(many=True)
+    sessions = SessionSerializer(many=True)
+
+    class Meta:
+        model = Campaign
+        fields = ["url", "dm", "name", "players", "sessions"]
+        read_only_fields = ["players", "sessions"]
 
 
 class CampaignChatMessageSerializer(serializers.HyperlinkedModelSerializer):

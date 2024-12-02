@@ -30,7 +30,7 @@ data class LoginResponse(
 
 @Serializable
 data class RegisterData(
-    val username: String,
+    val name: String,
     val email: String,
     val password: String
 )

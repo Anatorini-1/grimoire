@@ -39,11 +39,13 @@ import pl.anatorini.grimoire.models.CharacterClass
 import pl.anatorini.grimoire.models.Item
 import pl.anatorini.grimoire.models.Race
 import pl.anatorini.grimoire.models.Spell
+import pl.anatorini.grimoire.navigation.CampaignRoute
 import pl.anatorini.grimoire.navigation.Routes
 import pl.anatorini.grimoire.navigation.SessionRoute
 import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.state.Auth
 import pl.anatorini.grimoire.state.Settings
+import pl.anatorini.grimoire.ui.components.CampaignScreen
 import pl.anatorini.grimoire.ui.components.archive.ModelCreationForm
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.CharacterRenderer
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.DefaultRenderer
@@ -186,6 +188,11 @@ fun MainScreen(
                 composable<SessionRoute>() { navBackStackEntry ->
                     val route: SessionRoute = navBackStackEntry.toRoute()
                     SessionScreen(navController = navController, url = route.url)
+
+                }
+                composable<CampaignRoute>() { navBackStackEntry ->
+                    val route: CampaignRoute = navBackStackEntry.toRoute()
+                    CampaignScreen(navController = navController, url = route.url)
 
                 }
                 composable(route = Routes.CHARACTERS.name) {

@@ -46,7 +46,7 @@ private val LightColorScheme = lightColorScheme(
     errorContainer = Color(0xFFf49399),
     onError = Color.White,
     onErrorContainer = Color.Black,
-    scrim = Color(0xFFA5A5A5)
+    scrim = Color(0xFF5DD13D)
 )
 
 

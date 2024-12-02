@@ -60,7 +60,7 @@ fun SessionScreen(
     initial: Session? = null
 ) {
     var instance by remember { mutableStateOf(initial ?: Session(url)) }
-    var messages = remember { mutableStateListOf<String>() }
+    var messages = remember { mutableStateListOf<CampaignMessage>() }
     var view by remember { mutableStateOf("Players") }
     val scope = rememberCoroutineScope()
     var client = HttpClient {
@@ -73,10 +73,15 @@ fun SessionScreen(
     }
     LaunchedEffect(key1 = url) {
         instance = HttpService.getModelInstance(url)
+        HttpService.getSessionMessages(instance)?.let {
+            for(message in it){
+                messages.add(message)
+            }
+        }
         launch {
             instance.token?.let {
                 HttpService.wssConnect(token = it, handler = object : WebSocketHandler {
-                    override val onMessage: (Frame) -> Unit = {
+                    override val onMessage: suspend (Frame) -> Unit = {
                         when (it) {
                             is Frame.Binary -> {
                                 Log.d(
@@ -84,26 +89,33 @@ fun SessionScreen(
                                     it.data.toByteString().string(Charset.defaultCharset())
                                 )
                             }
+
                             is Frame.Text -> {
                                 Log.d("WSS", it.readText())
-                                val command : WebSocketChatMessage = Json.decodeFromString(it.readText())
-                                messages.add(command.payload.message)
+                                val command: WebSocketChatMessage =
+                                    Json.decodeFromString(it.readText())
+                                val m = command.payload
+
+                                messages.add(m)
                             }
+
                             is Frame.Close -> {
 
                                 Log.d("WSS", "Close")
                             }
+
                             else -> {
                                 Log.e("WSS", "Unsupported frame type")
                             }
                         }
                     }
-                    override val onDisconnected: () -> Unit = {}
-                    override val onConnected: () -> Unit = {}
-                    override val onError: () -> Unit = {}
+                    override val onDisconnected: suspend () -> Unit = {}
+                    override val onConnected: suspend () -> Unit = {}
+                    override val onError: suspend () -> Unit = {}
                 })
             }
         }
+
         loaded = true
 
     }
@@ -165,15 +177,19 @@ fun SessionScreen(
                     }
                 }
             }
-            when(view){
+            Row {
+                Text(text = "Messages: ${messages.size}")
+            }
+            when (view) {
                 "Players" -> {}
                 "Chat" -> {
                     ChatWindow(sendMessage = {
                         scope.launch {
-                            HttpService.sendChatMessage(instance.url,it)
+                            HttpService.sendChatMessage(instance.url, it)
                         }
                     }, messages = messages)
                 }
+
                 "Combat" -> {}
                 else -> {}
             }

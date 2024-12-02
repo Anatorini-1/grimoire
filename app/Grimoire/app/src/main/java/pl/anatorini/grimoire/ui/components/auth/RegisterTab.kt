@@ -35,9 +35,9 @@ import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable
 fun RegisterTab(modifier: Modifier = Modifier, navController: NavHostController) {
-    var login by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
+    var login by remember { mutableStateOf("dupa") }
+    var password by remember { mutableStateOf("dupa@dupa.com") }
+    var email by remember { mutableStateOf("dupadupa") }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     Column(

@@ -3,6 +3,7 @@ package pl.anatorini.grimoire.ui.components.sessions
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -16,9 +17,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -26,6 +29,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,10 +42,14 @@ import pl.anatorini.grimoire.ui.theme.AppTheme
 fun ChatWindow(
     modifier: Modifier = Modifier,
     sendMessage: (String) -> Unit,
-    messages: List<String>
+    messages: List<CampaignMessage>
 ) {
     var message by remember { mutableStateOf("") }
+    var scope = rememberCoroutineScope()
     LaunchedEffect(key1 = messages.toString()) {
+        for (m in messages) {
+
+        }
     }
     Column(
         modifier = Modifier
@@ -59,9 +67,7 @@ fun ChatWindow(
         Row {
             Column {
                 for (m in messages) {
-                    Row {
-                        Text(text = m)
-                    }
+                        MessageRow(msg = m.message, user = m.sender?.player?.name ?: "unknown", date = m.created_at)
                 }
             }
         }
@@ -107,6 +113,44 @@ fun ChatWindow(
                 }
             }
 
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MessageRow(msg: String, user: String, date: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(5.dp)
+    ) {
+        OutlinedTextField(
+            value = msg,
+            colors = OutlinedTextFieldDefaults.colors(
+                disabledBorderColor = MaterialTheme.colorScheme.primary,
+                disabledTextColor = MaterialTheme.colorScheme.primary,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            onValueChange = {},
+            enabled = false,
+            label = { Text(text = "$user : $date") })
+    }
+}
+
+@Preview
+@Composable
+fun MessageRowPreview() {
+    AppTheme {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        ) {
+            MessageRow("Dupa", "Anatorini", "Now")
+            MessageRow("Dupa", "Anatorini", "Now")
+            MessageRow("Dupa", "Anatorini", "Now")
+            MessageRow("Dupa", "Anatorini", "Now")
         }
     }
 }

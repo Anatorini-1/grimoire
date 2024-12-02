@@ -39,17 +39,35 @@ class SpellSlotsExpended(Model):
 
 class Character(Model):
     name = CharField(max_length=128)
+    player = ForeignKey(
+        User,
+        on_delete=PROTECT,
+    )
+    # classname = ForeignKey(Class, on_delete=PROTECT, related_name="classname")
+    # caster_info = OneToOneField(CasterInfo, null=True, on_delete=PROTECT)
+    # experience = IntegerField(default=0)
+    # info = OneToOneField(CharacterInfo, on_delete=PROTECT, null=True)
+    # background = ForeignKey(Background, on_delete=PROTECT)
+    # alignment = ForeignKey(Alignment, on_delete=PROTECT)
+    # race = ForeignKey(Race, on_delete=PROTECT)
+    # deathSaveSuccess = IntegerField(default=0)
+    # deathSaveFailure = IntegerField(default=0)
+    # temporaryHitpoint = IntegerField(default=0)
+
+
+class NewCharacter(Model):
+    name = CharField(max_length=128)
     player = ForeignKey(User, on_delete=PROTECT, related_name="player")
-    classname = ForeignKey(Class, on_delete=PROTECT, related_name="classname")
-    caster_info = OneToOneField(CasterInfo, null=True, on_delete=PROTECT)
-    experience = IntegerField(default=0)
-    info = OneToOneField(CharacterInfo, on_delete=PROTECT, null=True)
-    background = ForeignKey(Background, on_delete=PROTECT)
-    alignment = ForeignKey(Alignment, on_delete=PROTECT)
-    race = ForeignKey(Race, on_delete=PROTECT)
-    deathSaveSuccess = IntegerField(default=0)
-    deathSaveFailure = IntegerField(default=0)
-    temporaryHitpoint = IntegerField(default=0)
+    # classname = ForeignKey(Class, on_delete=PROTECT, related_name="classname")
+    # caster_info = OneToOneField(CasterInfo, null=True, on_delete=PROTECT)
+    # experience = IntegerField(default=0)
+    # info = OneToOneField(CharacterInfo, on_delete=PROTECT, null=True)
+    # background = ForeignKey(Background, on_delete=PROTECT)
+    # alignment = ForeignKey(Alignment, on_delete=PROTECT)
+    # race = ForeignKey(Race, on_delete=PROTECT)
+    # deathSaveSuccess = IntegerField(default=0)
+    # deathSaveFailure = IntegerField(default=0)
+    # temporaryHitpoint = IntegerField(default=0)
 
 
 class CharacterItem(Model):

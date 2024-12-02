@@ -71,9 +71,6 @@ fun TopBar(
             IconButton(onClick = {
                 navController.navigate(Routes.AUTH.name)
             }) {
-                if(HttpService.user != null){
-                    Text("Hello ${HttpService.user!!.username}")
-                }
                 Icon(
                     imageVector = Icons.Filled.AccountCircle,
                     contentDescription = "Localized description"

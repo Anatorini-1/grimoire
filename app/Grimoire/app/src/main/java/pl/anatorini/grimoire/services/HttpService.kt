@@ -4,6 +4,8 @@ import android.util.Log
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.cache.HttpCache
+import io.ktor.client.plugins.cache.storage.FileStorage
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.wss
@@ -21,6 +23,7 @@ import pl.anatorini.grimoire.models.Background
 import pl.anatorini.grimoire.models.Campaign
 import pl.anatorini.grimoire.models.CampaignMessage
 import pl.anatorini.grimoire.models.CampaignPlayer
+import pl.anatorini.grimoire.models.CampaignPlayerInvite
 import pl.anatorini.grimoire.models.Character
 import pl.anatorini.grimoire.models.CharacterClass
 import pl.anatorini.grimoire.models.Item
@@ -32,6 +35,7 @@ import pl.anatorini.grimoire.models.PaginatedResponse
 import pl.anatorini.grimoire.models.Player
 import pl.anatorini.grimoire.models.PostAlignment
 import pl.anatorini.grimoire.models.PostBackground
+import pl.anatorini.grimoire.models.PostCampaign
 import pl.anatorini.grimoire.models.PostCampaignMessage
 import pl.anatorini.grimoire.models.PostCharacter
 import pl.anatorini.grimoire.models.PostCharacterClass
@@ -50,6 +54,7 @@ import pl.anatorini.grimoire.models.User
 import pl.anatorini.grimoire.models.WebSocketHandler
 import pl.anatorini.grimoire.state.Auth
 import pl.anatorini.grimoire.state.Settings
+import java.io.File
 import java.util.concurrent.TimeoutException
 
 class HttpService(private val auth: Auth, private val settings: Settings) {
@@ -57,8 +62,8 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
         var address = "192.168.0.55";
         var port = 8000;
         var user: User? = User(
-            token = "66365a3edf9b42943d862eaf6033eaf4be927883",
-            username = "admin"
+            token = "9178998a1cb2f4630dfb23d26564342bbab3c04d",
+            username = "anatorini"
         )
         var wssClient: HttpClient? = null
 
@@ -127,7 +132,15 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
         ): PaginatedResponse<T> {
             Log.println(Log.INFO, "HttpService", "getSpells()")
             var jsonResponse: String = ""
-            val client: HttpClient = HttpClient(CIO)
+            val cacheDir = File("cache") // Create a File object for the directory
+            if (!cacheDir.exists()) {
+                cacheDir.mkdirs() // Ensure the directory exists
+            }
+            val client: HttpClient = HttpClient(CIO) {
+                install(HttpCache) {
+                    publicStorage(FileStorage(cacheDir)) // Cache to a file
+                }
+            }
             val path = pageUrl ?: "http://${address}:${port}$modelUrl/"
             try {
                 val response = client.get(path) {
@@ -189,6 +202,7 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
                 }
             }
             val path = "http://${address}:${port}/$modelPath/"
+            Log.println(Log.INFO, "HttpService", "$path ...")
             try {
                 val response = client.post(path) {
                     contentType(ContentType.Application.Json)
@@ -201,90 +215,105 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
                     HttpStatusCode.Created -> {
                         when (response.contentType()) {
                             ContentType.Application.Json -> {
-//                                Log.println(Log.INFO, "HttpService", "$path OK")
-//                                Log.println(Log.INFO, "HttpService", response.body<String>())
+                                Log.println(Log.INFO, "HttpService", "$path OK")
+                                Log.println(Log.INFO, "HttpService", response.body<String>())
                                 jsonResponse = response.body()
                             }
 
                             else -> {
-//                                Log.println(
-//                                    Log.ERROR,
-//                                    "HttpService",
-//                                    response.contentType().toString()
-//                                )
-//                                Log.println(Log.ERROR, "HttpService", response.body())
+                                Log.println(
+                                    Log.ERROR,
+                                    "HttpService",
+                                    response.contentType().toString()
+                                )
+                                Log.println(Log.ERROR, "HttpService", response.body())
                             }
                         }
                     }
 
                     else -> {
-//                        Log.println(Log.ERROR, "HttpService", response.status.description)
+                        Log.println(Log.ERROR, "HttpService", response.status.description)
+                        Log.println(Log.ERROR, "HttpService", response.body())
                     }
                 }
                 client.close()
             } catch (e: TimeoutException) {
-//                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
             }
             try {
-//                Log.println(Log.INFO, "HttpService-PostModelResponse", jsonResponse)
+                Log.println(Log.INFO, "HttpService-PostModelResponse", jsonResponse)
                 val item: R = Json.decodeFromString(jsonResponse)
                 return item
             } catch (e: Error) {
-//                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
                 throw e
             } catch (e: Exception) {
-//                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
                 throw e
+            }
+        }
+
+        fun replaceHostAndPort(url: String, newHost: String, newPort: String): String {
+            // Regex pattern to match the scheme, host, and port
+            val regex = Regex("(http://)([^:/]+)(:\\d+)")
+            // Replace with new host and port
+            return regex.replace(url) { matchResult ->
+                val scheme = matchResult.groupValues[1] // e.g., "http://"
+                "$scheme$newHost:$newPort"
             }
         }
 
         suspend inline fun <reified T : Model> getModelInstance(
             instanceUrl: String,
         ): T {
-//            Log.println(Log.INFO, "HttpService", "getSpells()")
+            val url = replaceHostAndPort(instanceUrl, address, port.toString())
+            Log.println(Log.INFO, "HttpService", "getModelInstance")
+
             var jsonResponse: String = ""
-            val client: HttpClient = HttpClient(CIO)
+            val client: HttpClient = HttpClient()
+            Log.println(Log.INFO, "HttpService", "1")
             val path = instanceUrl
             try {
-                val response = client.get(path) {
+                val response = client.get(url) {
                     if (user != null) {
                         header("Authorization", "Bearer ${user!!.token}")
                     }
                 }
+                Log.println(Log.INFO, "HttpService", "2")
                 when (response.status) {
                     HttpStatusCode.OK -> {
                         when (response.contentType()) {
                             ContentType.Application.Json -> {
-//                                Log.println(Log.INFO, "HttpService", "$path OK")
-//                                Log.println(Log.INFO, "HttpService", response.body<String>())
+                                Log.println(Log.INFO, "HttpService", "$path OK")
+                                Log.println(Log.INFO, "HttpService", response.body<String>())
                                 jsonResponse = response.body()
                             }
 
                             else -> {
-//                                Log.println(
-//                                    Log.ERROR,
-//                                    "HttpService",
-//                                    response.contentType().toString()
-//                                )
-//                                Log.println(Log.ERROR, "HttpService", response.body())
+                                Log.println(
+                                    Log.ERROR,
+                                    "HttpService",
+                                    response.contentType().toString()
+                                )
+                                Log.println(Log.ERROR, "HttpService", response.body())
                             }
                         }
                     }
 
                     else -> {
-//                        Log.println(Log.ERROR, "HttpService", response.status.description)
+                        Log.println(Log.ERROR, "HttpService", response.status.description)
                     }
                 }
                 client.close()
             } catch (e: TimeoutException) {
-//                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
             }
 
             try {
                 val item: T = Json.decodeFromString(jsonResponse)
                 return item
             } catch (e: Error) {
-//                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
                 throw e
             }
         }
@@ -376,21 +405,26 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
 //            }
 
 
-        val postClass: suspend (instance: CharacterClass) -> CharacterClass? = {
-            postModel("/classes", PostCharacterClass(it.name, it.spellcastingAbility))
+        val postCampaign: suspend (instance: Campaign) -> Campaign? = {
+
+            postModel("campaigns", PostCampaign(it.name, it.dm!!.url))
         }
+        val postClass: suspend (instance: CharacterClass) -> CharacterClass? = {
+            postModel("classes", PostCharacterClass(it.name, it.spellcastingAbility))
+        }
+
         val postAlignment: suspend (instance: Alignment) -> Alignment? = {
             it
-            postModel("/alignments", PostAlignment(name = it.name))
+            postModel("alignments", PostAlignment(name = it.name))
         }
         val postBackground: suspend (instance: Background) -> Background? = {
             it
-            postModel("/backgrounds", PostBackground(name = it.name))
+            postModel("backgrounds", PostBackground(name = it.name))
         }
 
         val postItem: suspend (instance: Item) -> Item? = {
             postModel(
-                "/items", PostItem(
+                "items", PostItem(
                     name = it.name,
                     weight = it.weight,
                     value = it.value,
@@ -404,13 +438,13 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
 
         val postRace: suspend (instance: Race) -> Race? = {
             it
-            postModel("/races", PostRace(name = it.name))
+            postModel("races", PostRace(name = it.name))
         }
 
         val postSpell: suspend (instance: Spell) -> Spell? = {
             it
             postModel(
-                "/spells", PostSpell(
+                "spells", PostSpell(
                     name = it.name,
                     description = it.description,
                     level = it.level,
@@ -424,29 +458,14 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
 
         val postStatistic: suspend (instance: Statistic) -> Statistic? = {
             it
-            postModel("/statistics", PostStatistic(name = it.name))
+            postModel("statistics", PostStatistic(name = it.name))
         }
 
         val postCharacter: suspend (instance: Character) -> Character? = {
             it
             postModel(
-                "/statistics", PostCharacter(
+                "characters", PostCharacter(
                     name = it.name,
-                    player = it.player,
-                    classname = it.classname,
-                    experience = it.experience,
-                    info = it.info,
-                    background = it.background,
-                    alignment = it.alignment,
-                    race = it.race,
-                    deathSaveSuccess = it.deathSaveSuccess,
-                    deathSaveFailure = it.deathSaveFailure,
-                    temporaryHitpoint = it.temporaryHitpoint,
-                    items = it.items,
-                    statistics = it.statistics,
-                    skills = it.skills,
-                    equipment = it.equipment,
-                    spells = it.spells,
                 )
             )
         }
@@ -481,6 +500,112 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
                 Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
             }
         }
+
+
+        val getSessionMessages: suspend (instance: Session) -> List<CampaignMessage>? =
+            { instance ->
+                var jsonResponse: String = ""
+                val client: HttpClient = HttpClient(CIO) {
+                    install(ContentNegotiation) {
+                        json()
+                    }
+                }
+                try {
+                    val response = client.get("${instance.url}messages/") {
+                        contentType(ContentType.Application.Json)
+                        if (user != null) {
+                            header("Authorization", "Bearer ${user!!.token}")
+                        }
+                    }
+                    var instance: List<CampaignMessage>? = null
+                    when (response.status) {
+                        HttpStatusCode.OK -> {
+                            Log.println(Log.ERROR, "HttpService", response.status.description)
+                            val res = Json.decodeFromString<List<CampaignMessage>>(response.body())
+                            instance = res
+                        }
+
+                        else -> {
+                            Log.println(Log.ERROR, "HttpService", response.status.description)
+                        }
+                    }
+                    client.close()
+                    instance
+                } catch (e: TimeoutException) {
+                    Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                    null
+                }
+            }
+
+        val createcampaignInvite: suspend (instance: Campaign, player: String) -> CampaignPlayer? =
+            { instance, player ->
+                var jsonResponse: String = ""
+                val client: HttpClient = HttpClient(CIO) {
+                    install(ContentNegotiation) {
+                        json()
+                    }
+                }
+                try {
+                    val response = client.post("${instance.url}invite-player/") {
+                        contentType(ContentType.Application.Json)
+                        setBody(CampaignPlayerInvite(player))
+                        if (user != null) {
+                            header("Authorization", "Bearer ${user!!.token}")
+                        }
+                    }
+                    var instance: CampaignPlayer? = null
+                    when (response.status) {
+                        HttpStatusCode.Created -> {
+                            Log.println(Log.ERROR, "HttpService", response.status.description)
+                            val res = Json.decodeFromString<CampaignPlayer>(response.body())
+                            instance = res
+                        }
+
+                        else -> {
+                            Log.println(Log.ERROR, "HttpService", response.status.description)
+                        }
+                    }
+                    client.close()
+                    instance
+                } catch (e: TimeoutException) {
+                    Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                    null
+                }
+            }
+
+
+        val startCampaignSession: suspend (instance: Campaign) -> Unit =
+            { instance ->
+                var jsonResponse: String = ""
+                val client: HttpClient = HttpClient(CIO) {
+                    install(ContentNegotiation) {
+                        json()
+                    }
+                }
+                try {
+                    val response = client.post("${instance.url}create-session/") {
+                        contentType(ContentType.Application.Json)
+                        if (user != null) {
+                            header("Authorization", "Bearer ${user!!.token}")
+                        }
+                    }
+                    when (response.status) {
+                        HttpStatusCode.Created -> {
+                            Log.println(Log.ERROR, "HttpService", response.status.description)
+                        }
+
+                        else -> {
+                            Log.println(Log.ERROR, "HttpService", response.status.description)
+                        }
+                    }
+                    client.close()
+                    instance
+                } catch (e: TimeoutException) {
+                    Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                    null
+                }
+            }
+
         val login: suspend (login: String, password: String) -> Boolean = { login, password ->
 
             var jsonResponse: String = ""
@@ -499,40 +624,40 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
                     HttpStatusCode.OK -> {
                         when (response.contentType()) {
                             ContentType.Application.Json -> {
-//                                Log.println(Log.INFO, "HttpService", "$path OK")
-//                                Log.println(Log.INFO, "HttpService", response.body<String>())
+                                Log.println(Log.INFO, "HttpService", "$path OK")
+                                Log.println(Log.INFO, "HttpService", response.body<String>())
                                 jsonResponse = response.body()
                             }
 
                             else -> {
-//                                Log.println(
-//                                    Log.ERROR,
-//                                    "HttpService",
-//                                    response.contentType().toString()
-//                                )
-//                                Log.println(Log.ERROR, "HttpService", response.body())
+                                Log.println(
+                                    Log.ERROR,
+                                    "HttpService",
+                                    response.contentType().toString()
+                                )
+                                Log.println(Log.ERROR, "HttpService", response.body())
                             }
                         }
                     }
 
                     else -> {
-//                        Log.println(Log.ERROR, "HttpService", response.status.description)
+                        Log.println(Log.ERROR, "HttpService", response.status.description)
                     }
                 }
                 client.close()
             } catch (e: TimeoutException) {
-//                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
             }
             try {
-//                Log.println(Log.INFO, "HttpService-PostModelResponse", jsonResponse)
+                Log.println(Log.INFO, "HttpService-PostModelResponse", jsonResponse)
                 val token: LoginResponse = Json.decodeFromString(jsonResponse)
                 user = User(login, token.token)
                 true
             } catch (e: Error) {
-//                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
                 false
             } catch (e: Exception) {
-//                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
                 false
             }
         }
@@ -578,6 +703,11 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
 
                         else -> {
                             Log.println(Log.ERROR, "HttpService", response.status.description)
+                            Log.println(
+                                Log.ERROR,
+                                "HttpService",
+                                response.body<String>().toString()
+                            )
                         }
                     }
                     client.close()

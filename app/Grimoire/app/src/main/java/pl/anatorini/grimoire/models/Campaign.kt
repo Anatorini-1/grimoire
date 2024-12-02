@@ -14,12 +14,18 @@ import pl.anatorini.grimoire.services.HttpService
 
 @Serializable
 data class Campaign(
-    override val name: String = "",
-    override val url: String = "",
-    var dm: PlayerForeignField = PlayerForeignField(""),
-    var players: List<CampaignPlayerForeignField> = emptyList(),
-    var sessions: List<SessionForeignField> = emptyList()
+    override var name: String = "",
+    override var url: String = "",
+    var dm: Player? = null,
+    var players: List<CampaignPlayer> = emptyList(),
+    var sessions: List<Session> = emptyList()
 ) : NamedModel
+
+@Serializable
+data class PostCampaign(
+    override val name: String,
+    val dm: String
+) : PostModel
 
 @Serializable(with = CampaignForeignFieldSerializer::class)
 data class CampaignForeignField(

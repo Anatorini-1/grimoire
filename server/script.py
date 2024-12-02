@@ -12,6 +12,12 @@ from library.models import (
     Item,
 )
 
+[x.delete() for x in Spell.objects.all()]
+[x.delete() for x in Alignment.objects.all()]
+[x.delete() for x in Item.objects.all()]
+[x.delete() for x in Statistic.objects.all()]
+[x.delete() for x in Race.objects.all()]
+[x.delete() for x in Background.objects.all()]
 # Create a sample admin user
 admin_user = User.objects.create_user(
     username="admin", email="admin@example.com", password="password"
@@ -19,15 +25,13 @@ admin_user = User.objects.create_user(
 
 # Statistics
 stats = ["Strength", "Dexterity", "Constitution", "Intelligence", "Wisdom", "Charisma"]
-stat_objs = [
-    Statistic.objects.create(name=stat, created_by=admin_user) for stat in stats
-]
+stat_objs = [Statistic.objects.create(name=stat, created_by=None) for stat in stats]
 
 # Skills
 skills = ["Athletics", "Acrobatics", "Stealth", "Arcana", "Perception", "Persuasion"]
 skill_objs = [
     Skill.objects.create(
-        name=skill, statistic=random.choice(stat_objs), created_by=admin_user
+        name=skill, statistic=random.choice(stat_objs), created_by=None
     )
     for skill in skills
 ]
@@ -36,7 +40,7 @@ skill_objs = [
 classes = ["Fighter", "Wizard", "Cleric", "Rogue"]
 class_objs = [
     Class.objects.create(
-        name=cls, spellcastingAbility=random.choice(stat_objs), created_by=admin_user
+        name=cls, spellcastingAbility=random.choice(stat_objs), created_by=None
     )
     for cls in classes
 ]
@@ -44,7 +48,7 @@ class_objs = [
 # Backgrounds
 backgrounds = ["Soldier", "Sage", "Criminal", "Folk Hero"]
 background_objs = [
-    Background.objects.create(name=bg, created_by=admin_user) for bg in backgrounds
+    Background.objects.create(name=bg, created_by=None) for bg in backgrounds
 ]
 
 # Alignments
@@ -60,12 +64,12 @@ alignments = [
     "Chaotic Evil",
 ]
 alignment_objs = [
-    Alignment.objects.create(name=al, created_by=admin_user) for al in alignments
+    Alignment.objects.create(name=al, created_by=None) for al in alignments
 ]
 
 # Races
 races = ["Human", "Elf", "Dwarf", "Halfling"]
-race_objs = [Race.objects.create(name=race, created_by=admin_user) for race in races]
+race_objs = [Race.objects.create(name=race, created_by=None) for race in races]
 
 # Spells
 spells = [
@@ -88,14 +92,14 @@ spells = [
         "duration": "1 minute",
     },
 ]
-spell_objs = [Spell.objects.create(created_by=admin_user, **spell) for spell in spells]
+spell_objs = [Spell.objects.create(created_by=None, **spell) for spell in spells]
 
 # Feats
 feats = [
     {"name": "Sharpshooter", "description": "You gain bonuses to ranged attacks."},
     {"name": "Tough", "description": "Your hit point maximum increases."},
 ]
-feat_objs = [Feat.objects.create(created_by=admin_user, **feat) for feat in feats]
+feat_objs = [Feat.objects.create(created_by=None, **feat) for feat in feats]
 
 # Items
 items = [
@@ -118,6 +122,6 @@ items = [
         "description": "Restores hit points.",
     },
 ]
-item_objs = [Item.objects.create(created_by=admin_user, **item) for item in items]
+item_objs = [Item.objects.create(created_by=None, **item) for item in items]
 
 print("Sample data created successfully.")

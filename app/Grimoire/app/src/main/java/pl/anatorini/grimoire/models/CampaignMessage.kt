@@ -16,7 +16,7 @@ import pl.anatorini.grimoire.services.HttpService
 data class CampaignMessage(
     override var url: String,
     var session: SessionForeignField,
-    var sender: PlayerForeignField,
+    var sender: CampaignPlayer,
     var message: String,
     var created_at: String,
 ) : Model

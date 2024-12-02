@@ -33,6 +33,9 @@ enum class SettingsRoutes {
 @Serializable
 data class SessionRoute(val url: String)
 
+@Serializable
+data class CampaignRoute(val url: String)
+
 
 @Serializable
 data class CharacterRoute(val characterId: Int)
