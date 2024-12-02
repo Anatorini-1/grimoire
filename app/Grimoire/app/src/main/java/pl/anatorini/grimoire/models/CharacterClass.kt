@@ -16,7 +16,7 @@ import pl.anatorini.grimoire.services.HttpService
 data class CharacterClass(
     override var name: String = "",
     override var url: String = "",
-    var spellcastingAbility: StatisticForeignField = StatisticForeignField("")
+    var spellcastingAbility: StatisticForeignField? = StatisticForeignField("")
 ) : NamedModel
 
 

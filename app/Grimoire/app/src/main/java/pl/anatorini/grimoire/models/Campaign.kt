@@ -18,14 +18,19 @@ data class Campaign(
     override var url: String = "",
     var dm: Player? = null,
     var players: List<CampaignPlayer> = emptyList(),
-    var sessions: List<Session> = emptyList()
+    var sessions: List<Session> = emptyList(),
+    var accepted: Boolean = false
 ) : NamedModel
 
 @Serializable
 data class PostCampaign(
     override val name: String,
-    val dm: String
 ) : PostModel
+
+@Serializable
+data class JoinCampaign(
+    val character: String
+)
 
 @Serializable(with = CampaignForeignFieldSerializer::class)
 data class CampaignForeignField(

@@ -45,6 +45,7 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import pl.anatorini.grimoire.models.Campaign
 import pl.anatorini.grimoire.models.CampaignPlayer
+import pl.anatorini.grimoire.models.CharacterDetail
 import pl.anatorini.grimoire.models.Player
 import pl.anatorini.grimoire.models.PlayerForeignField
 import pl.anatorini.grimoire.models.Session
@@ -386,6 +387,12 @@ fun PlayerRow(instance: CampaignPlayer) {
             )
         )
     }
+    var character by remember { mutableStateOf<CharacterDetail?>(null) }
+    LaunchedEffect(key1 = instance.url) {
+        if (reactiveInstance.accepted && reactiveInstance.character != null) {
+            character = HttpService.getCharacterDetails(reactiveInstance.character!!.url)
+        }
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -396,6 +403,10 @@ fun PlayerRow(instance: CampaignPlayer) {
     ) {
         Text(
             text = reactiveInstance.player?.name ?: "Could not GET",
+            color = MaterialTheme.colorScheme.onPrimary
+        )
+        Text(
+            text = ("Character: " + (character?.name ?: "No character")),
             color = MaterialTheme.colorScheme.onPrimary
         )
         Icon(

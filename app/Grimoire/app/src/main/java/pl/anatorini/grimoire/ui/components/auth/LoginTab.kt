@@ -44,8 +44,8 @@ import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable
 fun LoginTab(modifier: Modifier = Modifier, navController: NavHostController) {
-    var login by remember { mutableStateOf("admin") }
-    var password by remember { mutableStateOf("password") }
+    var login by remember { mutableStateOf("test") }
+    var password by remember { mutableStateOf("testtest") }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
 

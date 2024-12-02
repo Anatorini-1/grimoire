@@ -40,6 +40,7 @@ import pl.anatorini.grimoire.models.Item
 import pl.anatorini.grimoire.models.Race
 import pl.anatorini.grimoire.models.Spell
 import pl.anatorini.grimoire.navigation.CampaignRoute
+import pl.anatorini.grimoire.navigation.CharacterRoute
 import pl.anatorini.grimoire.navigation.Routes
 import pl.anatorini.grimoire.navigation.SessionRoute
 import pl.anatorini.grimoire.services.HttpService
@@ -54,6 +55,7 @@ import pl.anatorini.grimoire.ui.components.archive.modelRenderers.SpellRenderer
 import pl.anatorini.grimoire.ui.components.auth.LoginTab
 import pl.anatorini.grimoire.ui.components.auth.LogoutTab
 import pl.anatorini.grimoire.ui.components.auth.RegisterTab
+import pl.anatorini.grimoire.ui.components.forms.CharacterCreationForm
 import pl.anatorini.grimoire.ui.components.navigation.NavDrawerItem
 import pl.anatorini.grimoire.ui.components.scaffold.TopBar
 import pl.anatorini.grimoire.ui.components.screens.archive.ArchiveModelScreen
@@ -193,30 +195,29 @@ fun MainScreen(
                 composable<CampaignRoute>() { navBackStackEntry ->
                     val route: CampaignRoute = navBackStackEntry.toRoute()
                     CampaignScreen(navController = navController, url = route.url)
-
                 }
+
+                composable<CharacterRoute>() { navBackStackEntry ->
+                    val route: CharacterRoute = navBackStackEntry.toRoute()
+                    CharacterDetailsScreen(navController = navController, url = route.url)
+                }
+
                 composable(route = Routes.CHARACTERS.name) {
                     ArchiveModelScreen<Character>(
                         modifier = Modifier,
-                        render = { character -> CharacterRenderer(instance = character) },
+                        render = { character ->
+                            CharacterRenderer(
+                                instance = character,
+                                navController = navController
+                            )
+                        },
                         label = {},
                         getter = HttpService.getCharacters,
                         navController = navController,
                         creationForm = { closeFunc ->
-                            ModelCreationForm<Character>(
-                                cancel = { closeFunc() },
-                                save = { it ->
-                                    Log.println(Log.INFO, "", it.toString())
-                                    scope.launch {
-                                        HttpService.postCharacter(it)?.let {
-                                            Toast.makeText(
-                                                context,
-                                                "Created!",
-                                                Toast.LENGTH_SHORT
-                                            ).show()
-                                        }
-                                    }
-                                })
+                            CharacterCreationForm(
+                                closeFunc = { closeFunc() },
+                            )
                         }
                     )
                 }

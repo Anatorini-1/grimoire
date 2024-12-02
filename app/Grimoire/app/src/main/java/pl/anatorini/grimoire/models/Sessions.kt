@@ -28,6 +28,12 @@ data class RouteObject(
     val name: String
 )
 
+
+@Serializable
+data class SessionConnectedPlayer(
+    val player: CampaignPlayer
+)
+
 @Serializable(with = SessionForeignFieldSerializer::class)
 data class SessionForeignField(
     override var url: String,

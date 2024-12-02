@@ -35,9 +35,9 @@ import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable
 fun RegisterTab(modifier: Modifier = Modifier, navController: NavHostController) {
-    var login by remember { mutableStateOf("dupa") }
-    var password by remember { mutableStateOf("dupa@dupa.com") }
-    var email by remember { mutableStateOf("dupadupa") }
+    var login by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
     Column(
@@ -84,15 +84,14 @@ fun RegisterTab(modifier: Modifier = Modifier, navController: NavHostController)
                     shape = RoundedCornerShape(size = 5.dp),
                     onClick = {
                         scope.launch {
-                            if(HttpService.register(login,email,password)){
+                            if (HttpService.register(login, email, password)) {
                                 navController.navigate(Routes.AUTH.name)
                                 Toast.makeText(
                                     context,
                                     "Registered. You may log in now",
                                     Toast.LENGTH_LONG
                                 ).show()
-                            }
-                            else{
+                            } else {
 
                                 Toast.makeText(
                                     context,

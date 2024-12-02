@@ -10,9 +10,9 @@ data class WebsocketCommand(
 )
 
 @Serializable
-data class WebSocketChatMessage(
+data class WebSocketMessage(
     val type: String,
-    val payload: CampaignMessage
+    val payload: String
 )
 
 interface WebSocketHandler {

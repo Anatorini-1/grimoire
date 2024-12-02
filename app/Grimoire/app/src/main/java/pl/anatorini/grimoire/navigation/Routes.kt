@@ -38,5 +38,5 @@ data class CampaignRoute(val url: String)
 
 
 @Serializable
-data class CharacterRoute(val characterId: Int)
+data class CharacterRoute(val url: String)
 

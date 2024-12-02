@@ -37,14 +37,16 @@ import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.websocket.Frame
 import io.ktor.websocket.readText
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okio.ByteString.Companion.toByteString
 import pl.anatorini.grimoire.models.CampaignForeignField
 import pl.anatorini.grimoire.models.CampaignMessage
 import pl.anatorini.grimoire.models.CampaignMessageForeignField
 import pl.anatorini.grimoire.models.Session
-import pl.anatorini.grimoire.models.WebSocketChatMessage
+import pl.anatorini.grimoire.models.SessionConnectedPlayer
 import pl.anatorini.grimoire.models.WebSocketHandler
+import pl.anatorini.grimoire.models.WebSocketMessage
 import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.ui.components.common.Center
 import pl.anatorini.grimoire.ui.components.common.Loader
@@ -61,6 +63,8 @@ fun SessionScreen(
 ) {
     var instance by remember { mutableStateOf(initial ?: Session(url)) }
     var messages = remember { mutableStateListOf<CampaignMessage>() }
+    var connected_players = remember { mutableStateListOf<SessionConnectedPlayer>() }
+
     var view by remember { mutableStateOf("Players") }
     val scope = rememberCoroutineScope()
     var client = HttpClient {
@@ -74,7 +78,7 @@ fun SessionScreen(
     LaunchedEffect(key1 = url) {
         instance = HttpService.getModelInstance(url)
         HttpService.getSessionMessages(instance)?.let {
-            for(message in it){
+            for (message in it) {
                 messages.add(message)
             }
         }
@@ -92,11 +96,36 @@ fun SessionScreen(
 
                             is Frame.Text -> {
                                 Log.d("WSS", it.readText())
-                                val command: WebSocketChatMessage =
+                                val command: WebSocketMessage =
                                     Json.decodeFromString(it.readText())
-                                val m = command.payload
+                                when (command.type) {
+                                    "chat_message" -> {
+                                        Log.d("WSS", "Chat message $${command.payload}")
+                                        val m: CampaignMessage =
+                                            Json.decodeFromString(command.payload)
+                                        messages.add(m)
+                                    }
 
-                                messages.add(m)
+                                    "player_connected" -> {
+                                        Log.d("WSS", "Player Connected  $${command.payload}")
+                                        val m: String = command.payload
+                                        Log.d("WSS", m)
+                                    }
+
+                                    "player_disconnected" -> {
+                                        Log.d("WSS", "Player disconnected $${command.payload}")
+                                        val m: String = command.payload
+                                        Log.d("WSS", m)
+                                    }
+
+                                    else -> {
+
+                                        Log.e("WSS", "Unsupported message")
+                                        Log.e("WSS", command.type)
+                                        Log.e("WSS", command.payload)
+                                    }
+
+                                }
                             }
 
                             is Frame.Close -> {
@@ -109,8 +138,17 @@ fun SessionScreen(
                             }
                         }
                     }
-                    override val onDisconnected: suspend () -> Unit = {}
-                    override val onConnected: suspend () -> Unit = {}
+                    override val onDisconnected: suspend () -> Unit = {
+
+                        Log.e("WSS", "Disconnected")
+                    }
+                    override val onConnected: suspend () -> Unit = {
+                        HttpService.getSessionConnectedPlayers(instance)?.let {
+                            for (player in it) {
+                                connected_players.add(player)
+                            }
+                        }
+                    }
                     override val onError: suspend () -> Unit = {}
                 })
             }
@@ -180,8 +218,23 @@ fun SessionScreen(
             Row {
                 Text(text = "Messages: ${messages.size}")
             }
+
+            Row {
+                Text(text = "Players: ${connected_players.size}")
+            }
             when (view) {
-                "Players" -> {}
+                "Players" -> {
+                    Column {
+
+                        connected_players.forEach { player ->
+                            Log.d("Dupa", Json.encodeToString(player.player))
+                            Row {
+                                Text(text = player.player.player?.name ?: "Failed to get")
+                            }
+                        }
+                    }
+                }
+
                 "Chat" -> {
                     ChatWindow(sendMessage = {
                         scope.launch {

@@ -23,6 +23,12 @@ data class Character(
 @Serializable
 data class PostCharacter(
     override var name: String,
+    var classname: String = "",
+    var background: String = "",
+    var alignment: String = "",
+    var race:  String = "",
+    var info: CharacterInfo
+
 ) : PostModel
 
 

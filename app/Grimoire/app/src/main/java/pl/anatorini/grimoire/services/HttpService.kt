@@ -17,6 +17,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import pl.anatorini.grimoire.models.Alignment
 import pl.anatorini.grimoire.models.Background
@@ -26,7 +27,9 @@ import pl.anatorini.grimoire.models.CampaignPlayer
 import pl.anatorini.grimoire.models.CampaignPlayerInvite
 import pl.anatorini.grimoire.models.Character
 import pl.anatorini.grimoire.models.CharacterClass
+import pl.anatorini.grimoire.models.CharacterDetail
 import pl.anatorini.grimoire.models.Item
+import pl.anatorini.grimoire.models.JoinCampaign
 import pl.anatorini.grimoire.models.LoginData
 import pl.anatorini.grimoire.models.LoginResponse
 import pl.anatorini.grimoire.models.Model
@@ -47,6 +50,7 @@ import pl.anatorini.grimoire.models.PostStatistic
 import pl.anatorini.grimoire.models.Race
 import pl.anatorini.grimoire.models.RegisterData
 import pl.anatorini.grimoire.models.Session
+import pl.anatorini.grimoire.models.SessionConnectedPlayer
 import pl.anatorini.grimoire.models.Spell
 import pl.anatorini.grimoire.models.Statistic
 import pl.anatorini.grimoire.models.UnnamedPaginatedResponse
@@ -59,13 +63,81 @@ import java.util.concurrent.TimeoutException
 
 class HttpService(private val auth: Auth, private val settings: Settings) {
     companion object {
-        var address = "192.168.0.55";
+        var address = "192.168.0.57";
         var port = 8000;
         var user: User? = User(
-            token = "9178998a1cb2f4630dfb23d26564342bbab3c04d",
-            username = "anatorini"
+
+            token = "e459073a3294f233fec8d506c5d955f3eb641b5c",
+            username = "admin"
         )
         var wssClient: HttpClient? = null
+
+
+        private suspend inline fun <reified T> post(url: String, instance: T): Unit {
+            var jsonResponse: String = ""
+            val client: HttpClient = HttpClient(CIO) {
+                install(ContentNegotiation) {
+                    json()
+                }
+            }
+            try {
+                val response = client.post(url) {
+                    contentType(ContentType.Application.Json)
+                    setBody(instance)
+                    if (user != null) {
+                        header("Authorization", "Bearer ${user!!.token}")
+                    }
+                }
+                when (response.status) {
+                    HttpStatusCode.Created -> {
+                        Log.println(Log.ERROR, "HttpService", response.status.description)
+                    }
+
+                    else -> {
+                        Log.println(Log.ERROR, "HttpService", response.status.description)
+                        Log.println(Log.ERROR, "HttpService", response.body())
+                    }
+                }
+                client.close()
+            } catch (e: TimeoutException) {
+                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+            }
+        }
+
+        private suspend inline fun <reified T> get(url: String): T? {
+            var jsonResponse: String = ""
+            val client: HttpClient = HttpClient(CIO) {
+                install(ContentNegotiation) {
+                    json()
+                }
+            }
+            try {
+                val response = client.get(url) {
+                    contentType(ContentType.Application.Json)
+                    if (user != null) {
+                        header("Authorization", "Bearer ${user!!.token}")
+                    }
+                }
+                var instance: T? = null
+                when (response.status) {
+                    HttpStatusCode.OK -> {
+                        Log.println(Log.ERROR, "HttpService", response.status.description)
+                        val res = Json.decodeFromString<T>(response.body())
+                        instance = res
+                    }
+
+                    else -> {
+                        Log.println(Log.ERROR, "HttpService", response.status.description)
+                    }
+                }
+                client.close()
+                return instance
+            } catch (e: TimeoutException) {
+                Log.println(Log.ERROR, "HttpService", e.message.orEmpty())
+                return null
+            }
+        }
+
 
         private suspend inline fun <reified T : Model> getUnnamedModel(
             modelUrl: String,
@@ -322,7 +394,7 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
             wssClient = HttpClient {
                 install(WebSockets)
             }
-            wssClient!!.wss("ws://192.168.0.55:8000/ws/session/$token/?token=${user?.token}") {
+            wssClient!!.wss("ws://$address:$port/ws/session/$token/?token=${user?.token}") {
                 Log.d("WSS", "Conencted")
                 handler.onConnected()
                 try {
@@ -331,7 +403,7 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
                     }
                     handler.onDisconnected()
                 } catch (e: Exception) {
-                    Log.d("WSS", "Connection error")
+                    Log.d("WSS", "Connection error ${e.message}")
                     handler.onError
                 }
             }
@@ -407,10 +479,15 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
 
         val postCampaign: suspend (instance: Campaign) -> Campaign? = {
 
-            postModel("campaigns", PostCampaign(it.name, it.dm!!.url))
+            postModel("campaigns", PostCampaign(it.name))
         }
         val postClass: suspend (instance: CharacterClass) -> CharacterClass? = {
-            postModel("classes", PostCharacterClass(it.name, it.spellcastingAbility))
+            it.spellcastingAbility?.let { it1 -> PostCharacterClass(it.name, it1) }?.let { it2 ->
+                postModel(
+                    "classes",
+                    it2
+                )
+            }
         }
 
         val postAlignment: suspend (instance: Alignment) -> Alignment? = {
@@ -461,13 +538,9 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
             postModel("statistics", PostStatistic(name = it.name))
         }
 
-        val postCharacter: suspend (instance: Character) -> Character? = {
-            it
-            postModel(
-                "characters", PostCharacter(
-                    name = it.name,
-                )
-            )
+        val postCharacter: suspend (instance: PostCharacter) -> Unit = {
+            Log.d("HttpService", "Posting model ${Json.encodeToString(it)}")
+            post("http://${address}:${port}/characters/", instance = it)
         }
 
 
@@ -493,6 +566,7 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
 
                     else -> {
                         Log.println(Log.ERROR, "HttpService", response.status.description)
+                        throw Exception()
                     }
                 }
                 client.close()
@@ -727,6 +801,17 @@ class HttpService(private val auth: Auth, private val settings: Settings) {
 
             }
 
+        val getCharacterDetails: suspend (url: String) -> CharacterDetail? = {
+            get(it)
+        }
 
+
+        val getSessionConnectedPlayers: suspend (Session) -> List<SessionConnectedPlayer>? = {
+            get("${it.url}connected-players/")
+        }
+        val acceptCampaignInvite: suspend (Campaign, String) -> Unit = { campaign, character ->
+            post("${campaign.url}accept-invite/", JoinCampaign(character))
+
+        }
     }
 }

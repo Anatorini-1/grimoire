@@ -67,7 +67,11 @@ fun ChatWindow(
         Row {
             Column {
                 for (m in messages) {
-                        MessageRow(msg = m.message, user = m.sender?.player?.name ?: "unknown", date = m.created_at)
+                    MessageRow(
+                        msg = m.message,
+                        user = m.sender?.player?.name ?: "unknown",
+                        date = m.created_at
+                    )
                 }
             }
         }
@@ -101,6 +105,7 @@ fun ChatWindow(
                 Button(
                     onClick = {
                         sendMessage(message)
+                        message = ""
                     }, colors = ButtonDefaults.buttonColors(
                         contentColor = MaterialTheme.colorScheme.onPrimary,
                         containerColor = MaterialTheme.colorScheme.primary

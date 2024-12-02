@@ -1,6 +1,7 @@
 package pl.anatorini.grimoire.ui.components.archive.modelRenderers
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -22,37 +23,54 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import pl.anatorini.grimoire.models.Character
+import pl.anatorini.grimoire.navigation.CharacterRoute
 import pl.anatorini.grimoire.ui.theme.AppTheme
 
 @Composable
-fun CharacterRenderer(modifier: Modifier = Modifier,instance:Character){
+fun CharacterRenderer(
+    modifier: Modifier = Modifier,
+    instance: Character,
+    navController: NavController
+) {
     Row(horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.fillMaxWidth().height(intrinsicSize = IntrinsicSize.Max)
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(intrinsicSize = IntrinsicSize.Max)
             .clip(RoundedCornerShape(15.dp))
             .background(MaterialTheme.colorScheme.primary)
             .padding(10.dp)
+            .clickable {
+                navController.navigate(CharacterRoute(instance.url))
+            }
 
     ) {
-        Column(modifier=Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
+        Column(modifier = Modifier.fillMaxHeight(), verticalArrangement = Arrangement.Center) {
             Text(instance.name, color = MaterialTheme.colorScheme.onPrimary)
         }
-        IconButton(onClick = {}, colors = IconButtonDefaults.iconButtonColors(
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        )) {
+        IconButton(
+            onClick = {}, colors = IconButtonDefaults.iconButtonColors(
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
 
-            Icon(Icons.Filled.Person, contentDescription = "",)
+            Icon(Icons.Filled.Person, contentDescription = "")
         }
     }
 }
 
 
-
 @Composable
 @Preview
-fun CharacterRendererPreview(){
+fun CharacterRendererPreview() {
     val c = Character(name = "Anatorini")
     AppTheme {
-        CharacterRenderer(instance = c, modifier = Modifier.fillMaxWidth())
+        CharacterRenderer(
+            instance = c,
+            modifier = Modifier.fillMaxWidth(),
+            navController = rememberNavController()
+        )
     }
 }
