@@ -121,7 +121,7 @@ fun CharacterCreationForm(modifier: Modifier = Modifier, closeFunc: () -> Unit) 
                     color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(10.dp),
                     width = 2.dp
-                ),
+                ).padding(8.dp),
 
             horizontalArrangement = Arrangement.Center
 
@@ -143,59 +143,6 @@ fun CharacterCreationForm(modifier: Modifier = Modifier, closeFunc: () -> Unit) 
             label = { Text(text = "Name") }
 
         )
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Button(onClick = {
-                val characterInfo = CharacterInfo(
-                    age = age.toIntOrNull() ?: 0,
-                    height = height.toIntOrNull() ?: 0,
-                    weight = weight.toIntOrNull() ?: 0,
-                    eyes = eyes,
-                    skin = skin,
-                    hair = hair,
-                    allies_and_orgs = alliesAndOrgs,
-                    appearance = appearance,
-                    backstory = backstory,
-                    treasure = treasure,
-                    additionalFeaturesAndTraits =  additionalFeaturesAndTraits
-                )
-
-                val postCharacter = PostCharacter(
-                    name = name,
-                    classname = classname.url,
-                    background = background.url,
-                    alignment = alignment.url,
-                    race = race.url,
-                    info = characterInfo
-                )
-                scope.launch {
-                    try{
-                        HttpService.postCharacter(postCharacter)
-                            Toast.makeText(
-                                context,
-                                "Created",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            closeFunc()
-                    }
-                    catch (e:Exception){
-                        Log.e("CharacterCreation", e.message?:"No message")
-                        Toast.makeText(
-                            context,
-                            "Failed",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    }
-
-            }) {
-                Text(text = "Create")
-            }
-        }
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            OutlinedButton(onClick = {closeFunc()}) {
-                Text(text = "Cancel")
-            }
-        }
         ForeignSelect(
             items = classNames,
             setItem = { item ->
@@ -322,6 +269,60 @@ fun CharacterCreationForm(modifier: Modifier = Modifier, closeFunc: () -> Unit) 
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
         )
+
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            Button(onClick = {
+                val characterInfo = CharacterInfo(
+                    age = age.toIntOrNull() ?: 0,
+                    height = height.toIntOrNull() ?: 0,
+                    weight = weight.toIntOrNull() ?: 0,
+                    eyes = eyes,
+                    skin = skin,
+                    hair = hair,
+                    allies_and_orgs = alliesAndOrgs,
+                    appearance = appearance,
+                    backstory = backstory,
+                    treasure = treasure,
+                    additionalFeaturesAndTraits =  additionalFeaturesAndTraits
+                )
+
+                val postCharacter = PostCharacter(
+                    name = name,
+                    classname = classname.url,
+                    background = background.url,
+                    alignment = alignment.url,
+                    race = race.url,
+                    info = characterInfo
+                )
+                scope.launch {
+                    try{
+                        HttpService.postCharacter(postCharacter)
+                        Toast.makeText(
+                            context,
+                            "Created",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        closeFunc()
+                    }
+                    catch (e:Exception){
+                        Log.e("CharacterCreation", e.message?:"No message")
+                        Toast.makeText(
+                            context,
+                            "Failed",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+            }) {
+                Text(text = "Create")
+            }
+        }
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+            OutlinedButton(onClick = {closeFunc()}) {
+                Text(text = "Cancel")
+            }
+        }
     }
 }
 

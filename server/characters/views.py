@@ -5,6 +5,7 @@ from rest_framework import viewsets
 from library.models import Alignment, Race, Background, Class
 from .models import Character, NewCharacter
 from .serializers import (
+    CharacterCreationSerializer,
     CharacterSerializer,
     NewCharacterSerializer,
     UnauthorizedCharacterSerializer,
@@ -28,11 +29,12 @@ from django.contrib.auth.models import User
 
 class CharacterViewSet(viewsets.ModelViewSet):
     queryset = NewCharacter.objects.all()
-    serializer_class = UnauthorizedCharacterSerializer
+    serializer_class = NewCharacterSerializer
     permission_classes = [permissions.IsAuthenticated, IsCharacterOwnerOrDM]
 
     def list(self, request):
         queryset = NewCharacter.objects.filter(player=request.user)
+        self.serializer_class = UnauthorizedCharacterSerializer
         paginator = PageNumberPagination()
         page = paginator.paginate_queryset(queryset, request)
 
@@ -50,11 +52,11 @@ class CharacterViewSet(viewsets.ModelViewSet):
     def retrieve(self, request, pk=None):
         queryset = NewCharacter.objects.all()
         character = get_object_or_404(queryset, pk=pk)
-        if not request.user == character.player:
-            return Response(
-                status=status.HTTP_401_UNAUTHORIZED,
-                data={"error": "Only the characters owner can view its details"},
-            )
+        # if not request.user == character.player:
+        #     return Response(
+        #         status=status.HTTP_401_UNAUTHORIZED,
+        #         data={"error": "Only the characters owner can view its details"},
+        #     )
 
         serializer = NewCharacterSerializer(
             instance=character, context={"request": request}
@@ -62,24 +64,8 @@ class CharacterViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
-        def url_to_model(model, url):
-            return model.objects.get(pk=url.split("/")[-2])
+        self.serializer_class = CharacterCreationSerializer
+        return super().create(request, *args, **kwargs)
 
-        # Access data from the request
-        data = request.data
-
-        # Add custom logic (e.g., modifying data or validating conditions)
-        required = ["name"]
-        errors = {}
-        for r in required:
-            if r not in data:
-                errors[r] = f"Field {r} is required"
-        if len(errors) > 0:
-            return Response(data=errors, status=status.HTTP_400_BAD_REQUEST)
-
-        instance = NewCharacter.objects.create(
-            name=data["name"],
-            player=request.user,
-        )
-        out = self.get_serializer(instance=instance)
-        return Response(out.data, status=status.HTTP_201_CREATED)
+    def perform_create(self, serializer):
+        serializer.save(player=self.request.user)

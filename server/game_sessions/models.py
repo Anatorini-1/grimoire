@@ -12,12 +12,21 @@ class CampaignSession(models.Model):
     active = models.BooleanField()
     created_at = models.DateTimeField()
     ended_at = models.DateTimeField(null=True, default=None)
-    token = models.CharField(max_length=40, null=True)
+    token = models.CharField(max_length=80, null=True)
 
     def save(self, *args, **kwargs):
         if not self.id:  # type: ignore
             self.created_at = timezone.now()
         return super().save(*args, **kwargs)
+
+
+class CampaignSessionConnectedPlayers(models.Model):
+    player = models.ForeignKey(
+        CampaignPlayer, on_delete=models.CASCADE, related_name="connected_sessions"
+    )
+    session = models.ForeignKey(
+        CampaignSession, on_delete=models.CASCADE, related_name="connected_players"
+    )
 
 
 class CombatSession(models.Model):

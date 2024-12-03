@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "ipdb",
     "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -91,8 +92,12 @@ WSGI_APPLICATION = "grimoire.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "grimoire",
+        "USER": "grimoire",
+        "PASSWORD": "grimoire",
+        "HOST": "127.0.0.1",  # or your database host
+        "PORT": "5431",  # default PostgreSQL port
     }
 }
 

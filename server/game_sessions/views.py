@@ -1,6 +1,10 @@
 from django.shortcuts import render
 
-from game_sessions.models import CampaignSession, SessionMessage
+from game_sessions.models import (
+    CampaignSession,
+    CampaignSessionConnectedPlayers,
+    SessionMessage,
+)
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -10,7 +14,11 @@ from rest_framework.exceptions import ValidationError
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
-from game_sessions.serializers import SessionMessageSerializer, SessionSerializer
+from game_sessions.serializers import (
+    SessionConnectedPlayerSerializer,
+    SessionMessageSerializer,
+    SessionSerializer,
+)
 from campaigns.models import CampaignPlayer
 # Create your views here.
 
@@ -28,6 +36,17 @@ class CampaignSessionViewSet(viewsets.ModelViewSet):
         return Response(status=status.HTTP_200_OK)
         pass
 
+    @action(detail=True, methods=["get"], url_path="messages")
+    def messages(self, request: Request, pk=None):
+        session: CampaignSession = self.get_object()
+        messages = session.messages.all()
+        serializer = SessionMessageSerializer(
+            many=True, instance=messages, context={"request": request}
+        )
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+        pass
+
     @action(detail=True, methods=["post"], url_path="send-message")
     def send_message(self, request: Request, pk=None):
         session: CampaignSession = self.get_object()
@@ -43,6 +62,13 @@ class CampaignSessionViewSet(viewsets.ModelViewSet):
         ).exists():
             player: CampaignPlayer = CampaignPlayer.objects.get(
                 player=self.request.user, campaign=session.campaign
+            )
+        elif session.campaign.dm == self.request.user:
+            player = CampaignPlayer.objects.create(
+                campaign=session.campaign,
+                player=self.request.user,
+                character=None,
+                accepted=False,
             )
         else:
             return Response(
@@ -76,6 +102,17 @@ class CampaignSessionViewSet(viewsets.ModelViewSet):
             status=status.HTTP_201_CREATED,
             data=output.data,
         )
+
+    @action(detail=True, methods=["get"], url_path="connected-players")
+    def connected_players(self, request, pk=None):
+        instances = CampaignSessionConnectedPlayers.objects.filter(
+            session=self.get_object()
+        )
+
+        res = SessionConnectedPlayerSerializer(
+            instance=instances, many=True, context={"request": request}
+        )
+        return Response(data=res.data)
 
 
 class SessionMessageViewSet(viewsets.ModelViewSet):

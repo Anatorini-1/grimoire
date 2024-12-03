@@ -15,13 +15,13 @@ from library.models import Background, Alignment, Race, Item, Spell, Skill, Clas
 
 class CharacterInfo(Model):
     age = IntegerField()
-    heigth = IntegerField()
+    height = IntegerField()
     weight = IntegerField()
     eyes = CharField(max_length=16)
     skin = CharField(max_length=32)
     hair = CharField(max_length=64)
     allies_and_orgs = TextField()
-    apperance = TextField()
+    appearance = TextField()
     backstory = TextField()
     treasure = TextField()
     additionalFeaturesAndTraits = TextField()
@@ -58,16 +58,16 @@ class Character(Model):
 class NewCharacter(Model):
     name = CharField(max_length=128)
     player = ForeignKey(User, on_delete=PROTECT, related_name="player")
-    # classname = ForeignKey(Class, on_delete=PROTECT, related_name="classname")
-    # caster_info = OneToOneField(CasterInfo, null=True, on_delete=PROTECT)
-    # experience = IntegerField(default=0)
-    # info = OneToOneField(CharacterInfo, on_delete=PROTECT, null=True)
-    # background = ForeignKey(Background, on_delete=PROTECT)
-    # alignment = ForeignKey(Alignment, on_delete=PROTECT)
-    # race = ForeignKey(Race, on_delete=PROTECT)
-    # deathSaveSuccess = IntegerField(default=0)
-    # deathSaveFailure = IntegerField(default=0)
-    # temporaryHitpoint = IntegerField(default=0)
+    classname = ForeignKey(Class, on_delete=PROTECT, related_name="classname")
+    caster_info = OneToOneField(CasterInfo, null=True, on_delete=PROTECT)
+    experience = IntegerField(default=0)
+    info = OneToOneField(CharacterInfo, on_delete=PROTECT)
+    background = ForeignKey(Background, on_delete=PROTECT)
+    alignment = ForeignKey(Alignment, on_delete=PROTECT)
+    race = ForeignKey(Race, on_delete=PROTECT)
+    deathSaveSuccess = IntegerField(default=0)
+    deathSaveFailure = IntegerField(default=0)
+    temporaryHitpoint = IntegerField(default=0)
 
 
 class CharacterItem(Model):

@@ -1,9 +1,13 @@
 import logging
-from django.shortcuts import render
+from multiprocessing import context
+import stat
+from django.shortcuts import get_object_or_404, render
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 import secrets
+import campaigns
+from characters.models import Character, NewCharacter
 from game_sessions.models import CampaignSession
 from game_sessions.serializers import SessionSerializer
 from .models import Campaign, CampaignPlayer, CampaignChatMessage
@@ -15,7 +19,7 @@ from .serializers import (
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
-
+import ipdb
 from django.db.models import Q
 
 
@@ -65,6 +69,24 @@ class CampaignViewSet(viewsets.ModelViewSet):
             data=output.data,
         )
 
+    @action(detail=True, methods=["post"], url_path="accept-invite")
+    def accept_invite(self, request, pk=None):
+        campaign: Campaign = self.get_object()
+        user = request.user
+        if "character" not in request.data:
+            return Response(
+                data={"character": "This field is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        character = request.data["character"].split("/")[-2]
+        character = get_object_or_404(NewCharacter, pk=int(character))
+        invite = get_object_or_404(CampaignPlayer, campaign=campaign, player=user)
+        invite.accepted = True
+        invite.character = character
+        invite.save()
+        res = CampaignPlayerSerializer(instance=invite, context={"request": request})
+        return Response(data=res.data, status=status.HTTP_202_ACCEPTED)
+
     def list(self, request):
         user = request.user
         print(user)
@@ -81,6 +103,24 @@ class CampaignViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Save the new instance
+        instance = serializer.save(dm=self.request.user)
+
+        # Serialize the output data
+        output_serializer = self.get_serializer(instance)
+        output_data = output_serializer.data
+
+        # Get the related session and send a message
+        CampaignPlayer.objects.create(
+            campaign=instance, player=request.user, character=None, accepted=False
+        )
+
+        return Response(output_data, status=status.HTTP_201_CREATED)
 
 
 class CampaignPlayers(viewsets.ModelViewSet):

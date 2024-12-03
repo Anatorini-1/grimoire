@@ -10,7 +10,7 @@ from django.db.models import (
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from characters.models import Character
+from characters.models import Character, NewCharacter
 
 
 class Campaign(Model):
@@ -23,7 +23,7 @@ class CampaignPlayer(Model):
         Campaign, on_delete=CASCADE, null=False, related_name="players"
     )
     player = ForeignKey(User, on_delete=CASCADE, null=False, related_name="campaigns")
-    character = ForeignKey(Character, on_delete=PROTECT, null=True, default=None)
+    character = ForeignKey(NewCharacter, on_delete=PROTECT, null=True, default=None)
     accepted = BooleanField(default=False)
 
 
