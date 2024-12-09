@@ -37,24 +37,6 @@ class SpellSlotsExpended(Model):
     count = IntegerField()
 
 
-class Character(Model):
-    name = CharField(max_length=128)
-    player = ForeignKey(
-        User,
-        on_delete=PROTECT,
-    )
-    # classname = ForeignKey(Class, on_delete=PROTECT, related_name="classname")
-    # caster_info = OneToOneField(CasterInfo, null=True, on_delete=PROTECT)
-    # experience = IntegerField(default=0)
-    # info = OneToOneField(CharacterInfo, on_delete=PROTECT, null=True)
-    # background = ForeignKey(Background, on_delete=PROTECT)
-    # alignment = ForeignKey(Alignment, on_delete=PROTECT)
-    # race = ForeignKey(Race, on_delete=PROTECT)
-    # deathSaveSuccess = IntegerField(default=0)
-    # deathSaveFailure = IntegerField(default=0)
-    # temporaryHitpoint = IntegerField(default=0)
-
-
 class NewCharacter(Model):
     name = CharField(max_length=128)
     player = ForeignKey(User, on_delete=PROTECT, related_name="player")
@@ -72,24 +54,24 @@ class NewCharacter(Model):
 
 class CharacterItem(Model):
     item = ForeignKey(Item, on_delete=PROTECT)
-    character = ForeignKey(Character, on_delete=CASCADE, related_name="items")
+    character = ForeignKey(NewCharacter, on_delete=CASCADE, related_name="items")
     quantity = IntegerField()
 
 
 class CharacterStatistic(Model):
-    character = ForeignKey(Character, on_delete=CASCADE, related_name="statistics")
+    character = ForeignKey(NewCharacter, on_delete=CASCADE, related_name="statistics")
     value = IntegerField()
 
 
 class CharacterSkill(Model):
-    character = ForeignKey(Character, on_delete=CASCADE, related_name="skills")
+    character = ForeignKey(NewCharacter, on_delete=CASCADE, related_name="skills")
     skill = ForeignKey(Skill, on_delete=PROTECT)
     proficiency = BooleanField(default=False)
     expertise = BooleanField(default=False)
 
 
 class CharacterEquipment(Model):
-    character = ForeignKey(Character, on_delete=CASCADE, related_name="equipment")
+    character = ForeignKey(NewCharacter, on_delete=CASCADE, related_name="equipment")
     cp = IntegerField()
     sp = IntegerField()
     ep = IntegerField()
@@ -98,7 +80,7 @@ class CharacterEquipment(Model):
 
 
 class CharacterSpells(Model):
-    character = ForeignKey(Character, on_delete=CASCADE, related_name="spells")
+    character = ForeignKey(NewCharacter, on_delete=CASCADE, related_name="spells")
     spell = ForeignKey(Spell, on_delete=CASCADE)
     prepared = BooleanField(default=False)
 

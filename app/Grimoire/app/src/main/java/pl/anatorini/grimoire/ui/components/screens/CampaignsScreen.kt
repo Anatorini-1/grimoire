@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import pl.anatorini.grimoire.models.Campaign
+import pl.anatorini.grimoire.models.NamedModel
 import pl.anatorini.grimoire.services.HttpService
 import pl.anatorini.grimoire.ui.components.archive.ModelCreationForm
 import pl.anatorini.grimoire.ui.components.archive.modelRenderers.CampaignRenderer
@@ -21,6 +22,14 @@ import pl.anatorini.grimoire.ui.theme.AppTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CampaignsScreen(modifier: Modifier = Modifier, navController: NavController) {
+
+    data class demo(
+        override var name: String,
+        override var url: String,
+        var description: String,
+        var rules: String,
+    ) : NamedModel
+
     val scope = rememberCoroutineScope()
     ArchiveModelScreen(
         getter = HttpService.getCampaigns,

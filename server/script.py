@@ -128,6 +128,18 @@ items = [
     ),
 ]
 
+
+new_item = Item(
+    name="Potion of Healing",
+    weight=0.5,
+    value=50.0,
+    weapon=False,
+    description="Restores health.",
+)
+
+new_item.save()
+
+
 # # Save all instances
 # for stat in statistics:
 #     stat.save()

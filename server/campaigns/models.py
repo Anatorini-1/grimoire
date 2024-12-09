@@ -10,7 +10,7 @@ from django.db.models import (
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-from characters.models import Character, NewCharacter
+from characters.models import NewCharacter
 
 
 class Campaign(Model):
@@ -25,17 +25,3 @@ class CampaignPlayer(Model):
     player = ForeignKey(User, on_delete=CASCADE, null=False, related_name="campaigns")
     character = ForeignKey(NewCharacter, on_delete=PROTECT, null=True, default=None)
     accepted = BooleanField(default=False)
-
-
-class CampaignChatMessage(Model):
-    campaign = ForeignKey(
-        Campaign, on_delete=CASCADE, null=False, related_name="messages"
-    )
-    sender = ForeignKey(User, on_delete=CASCADE, null=False)
-    message = CharField(max_length=256, null=False)
-    created_at = DateTimeField(auto_now_add=True)
-
-    def save(self, *args, **kwargs):
-        if not self.id:  # type: ignore
-            self.created_at = timezone.now()
-        return super().save(*args, **kwargs)

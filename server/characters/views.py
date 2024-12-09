@@ -3,10 +3,9 @@ from django.shortcuts import render
 from rest_framework import viewsets
 
 from library.models import Alignment, Race, Background, Class
-from .models import Character, NewCharacter
+from .models import NewCharacter
 from .serializers import (
     CharacterCreationSerializer,
-    CharacterSerializer,
     NewCharacterSerializer,
     UnauthorizedCharacterSerializer,
 )

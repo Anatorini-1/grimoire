@@ -73,7 +73,6 @@ class ItemViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        # Set the created_by field to the authenticated user
         request.data["created_by"] = request.user.id
         return super().create(request, *args, **kwargs)
 

@@ -151,42 +151,19 @@ REST_FRAMEWORK = {
         "users.models.BearerTokenAuthentication",
     ],
 }
+
 LOGGING = {
     "version": 1,
-    "disable_existing_loggers": False,  # Allow existing loggers to work
-    "formatters": {
-        "verbose": {
-            "format": "{levelname} {asctime} {module} {message}",
-            "style": "{",  # Use `{}`-style formatting
-        },
-        "simple": {
-            "format": "{levelname} {message}",
-            "style": "{",
-        },
-    },
+    "disable_existing_loggers": False,
     "handlers": {
         "console": {
-            "level": "INFO",  # Set the log level for the console
             "class": "logging.StreamHandler",
-            "formatter": "verbose",  # Use the verbose formatter
-        },
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": os.path.join(BASE_DIR, "django_debug.log"),  # Output file
-            "formatter": "verbose",
         },
     },
     "loggers": {
-        "django": {
-            "handlers": ["console", "file"],  # Use console and file handlers
-            "level": "DEBUG",  # Log everything at DEBUG level or higher
-            "propagate": True,  # Pass log messages to parent loggers
-        },
         "django.db.backends": {
-            "handlers": ["console"],  # Log SQL queries to the console
-            "level": "DEBUG",
-            "propagate": False,  # Do not propagate to parent loggers
+            "handlers": ["console"],
+            "level": "DEBUG",  # Loguje wszystkie zapytania SQL
         },
     },
 }

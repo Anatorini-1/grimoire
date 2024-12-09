@@ -348,7 +348,14 @@ inline fun <reified T : NamedModel> ModelCreationForm(
 @Composable
 @Preview
 fun ModelCreationFormPreview() {
+    data class demo(
+        override var name: String,
+        override var url: String,
+        var description:String,
+        var rules: String,
+    )
+        : NamedModel
     AppTheme {
-        ModelCreationForm<Character>(Modifier.background(Color.White), cancel = {}, save = {})
+        ModelCreationForm<demo>(Modifier.background(Color.White), cancel = {}, save = {})
     }
 }

@@ -23,7 +23,7 @@ data class CharacterDetail(
 data class ClassResponse(
     val url: String,
     val name: String,
-    val spellcastingAbility: String
+    val spellcastingAbility: String?
 )
 
 @Serializable

@@ -24,7 +24,7 @@ data class Campaign(
 
 @Serializable
 data class PostCampaign(
-    override val name: String,
+    override val name: String
 ) : PostModel
 
 @Serializable

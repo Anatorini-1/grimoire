@@ -1,5 +1,4 @@
 import logging
-from multiprocessing import context
 import stat
 from django.shortcuts import get_object_or_404, render
 from rest_framework import viewsets, status
@@ -7,19 +6,17 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 import secrets
 import campaigns
-from characters.models import Character, NewCharacter
+from characters.models import NewCharacter
 from game_sessions.models import CampaignSession
 from game_sessions.serializers import SessionSerializer
-from .models import Campaign, CampaignPlayer, CampaignChatMessage
+from .models import Campaign, CampaignPlayer
 from .serializers import (
-    CampaignChatMessageSerializer,
     CampaignPlayerSerializer,
     CampaignSerializer,
 )
 from django.contrib.auth.models import User
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
-import ipdb
 from django.db.models import Q
 
 
@@ -126,8 +123,3 @@ class CampaignViewSet(viewsets.ModelViewSet):
 class CampaignPlayers(viewsets.ModelViewSet):
     queryset = CampaignPlayer.objects.all()
     serializer_class = CampaignPlayerSerializer
-
-
-class CampaignChatMessages(viewsets.ModelViewSet):
-    queryset = CampaignChatMessage.objects.all()
-    serializer_class = CampaignChatMessageSerializer

@@ -6,7 +6,7 @@ from library.serializers import (
     AligmentSerializer,
     RaceSerializer,
 )
-from .models import Character, CharacterInfo, CharacterItem, NewCharacter
+from .models import CharacterInfo, CharacterItem, NewCharacter
 import ipdb
 
 
@@ -26,40 +26,6 @@ class CharacterInfoSerializer(serializers.HyperlinkedModelSerializer):
             "treasure",
             "additionalFeaturesAndTraits",
         ]
-
-
-class CharacterSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Character
-        fields = (
-            [
-                "url",
-                # "name",
-                # "player",
-                # "classname",
-                # "experience",
-                # "info",
-                # "background",
-                # "alignment",
-                # "race",
-                # "deathSaveSuccess",
-                # "deathSaveFailure",
-                # "temporaryHitpoint",
-                # "items",
-                # "statistics",
-                # "skills",
-                # "equipment",
-                # "spells",
-            ],
-        )
-        # read_only_fields = [
-        #     "items",
-        #     "statistics",
-        #     "skills",
-        #     "equipment",
-        #     "spells",
-        #     "player",
-        # ]
 
 
 class CharacterCreationSerializer(serializers.HyperlinkedModelSerializer):
